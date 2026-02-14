@@ -1,0 +1,196 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-14T17:37:47.696Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 7,
+    "implemented": 6,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Apply a cohesive, Shopify-like visual design system across the app (Home, Header, Footer, Products, Suppliers, Cart, Checkout, Payment Success/Failure) with consistent spacing, typography, and component styling; use English for all user-facing text.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/Footer.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/pages/ProductsPage.tsx",
+          "frontend/src/pages/SuppliersPage.tsx",
+          "frontend/src/pages/CartPage.tsx",
+          "frontend/src/pages/CheckoutPage.tsx",
+          "frontend/src/pages/PaymentSuccessPage.tsx",
+          "frontend/src/pages/PaymentFailurePage.tsx",
+          "frontend/src/components/AccessDeniedScreen.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/Header.tsx",
+          "frontend/src/components/Footer.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/pages/ProductsPage.tsx",
+          "frontend/src/pages/SuppliersPage.tsx",
+          "frontend/src/pages/CartPage.tsx",
+          "frontend/src/pages/CheckoutPage.tsx",
+          "frontend/src/pages/PaymentSuccessPage.tsx",
+          "frontend/src/pages/PaymentFailurePage.tsx",
+          "frontend/src/components/AccessDeniedScreen.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Choose and enforce ONE distinct visual theme (colors, typography, layout) that is not blue/purple-dominant, and update Tailwind/theme tokens accordingly so the whole UI matches (including gradients currently used in HomePage/Header).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/pages/HomePage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add a self-serve “Create Store” (seller onboarding) flow so any authenticated user can open a store on the platform by creating/updating their supplier profile (store name, description, contact info).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/CreateStorePage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/CreateStorePage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Implement a seller dashboard that is accessible only to users who have a supplier profile (store created) and provides: store overview, list of their products, and actions to add/update/delete products.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/SellerDashboardPage.tsx",
+          "frontend/src/components/seller/ProductFormDialog.tsx",
+          "frontend/src/components/seller/SellerProductList.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Header.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/SellerDashboardPage.tsx",
+          "frontend/src/components/seller/ProductFormDialog.tsx",
+          "frontend/src/components/seller/SellerProductList.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/App.tsx",
+          "frontend/src/components/Header.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Add backend endpoints needed to support seller dashboard ergonomics without requiring the frontend to pass principals manually (e.g., getCallerSupplierProfile and getCallerSupplierProducts) and wire them into new React Query hooks.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Upgrade the storefront browsing experience to be Shopify-like: improve Products and Suppliers pages with better merchandising UI (filters/sorting remain), and add navigation from Suppliers to a supplier-specific product listing.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/SuppliersPage.tsx",
+          "frontend/src/pages/ProductsPage.tsx",
+          "frontend/src/utils/urlParams.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/SuppliersPage.tsx",
+          "frontend/src/pages/ProductsPage.tsx",
+          "frontend/src/utils/urlParams.ts"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Add and use required static generated images under frontend/public/assets/generated, and update UI to use them consistently where appropriate (brand + hero + placeholders).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/shop-logo.dim_512x128.png",
+          "frontend/public/assets/generated/hero-banner.dim_1600x600.png",
+          "frontend/public/assets/generated/product-placeholder.dim_400x400.png",
+          "frontend/src/utils/assets.ts",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/pages/ProductsPage.tsx",
+          "frontend/src/pages/CartPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/shop-logo.dim_512x128.png",
+          "frontend/public/assets/generated/hero-banner.dim_1600x600.png",
+          "frontend/public/assets/generated/product-placeholder.dim_400x400.png",
+          "frontend/src/utils/assets.ts",
+          "frontend/src/components/Header.tsx",
+          "frontend/src/pages/HomePage.tsx",
+          "frontend/src/pages/ProductsPage.tsx",
+          "frontend/src/pages/CartPage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "build-template/Dockerfile",
+    "build-template/LICENSE",
+    "build-template/README.md",
+    "build-template/deploy.sh",
+    "build-template/icp.yaml",
+    "build-template/src/backend/canister.yaml",
+    "build-template/src/frontend/canister.yaml",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/hero-banner.dim_1600x600.png",
+    "frontend/public/assets/generated/product-placeholder.dim_400x400.png",
+    "frontend/public/assets/generated/shop-logo.dim_512x128.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/AccessDeniedScreen.tsx",
+    "frontend/src/components/Footer.tsx",
+    "frontend/src/components/Header.tsx",
+    "frontend/src/components/seller/ProductFormDialog.tsx",
+    "frontend/src/components/seller/SellerProductList.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/CartPage.tsx",
+    "frontend/src/pages/CheckoutPage.tsx",
+    "frontend/src/pages/CreateStorePage.tsx",
+    "frontend/src/pages/HomePage.tsx",
+    "frontend/src/pages/PaymentFailurePage.tsx",
+    "frontend/src/pages/PaymentSuccessPage.tsx",
+    "frontend/src/pages/ProductsPage.tsx",
+    "frontend/src/pages/SellerDashboardPage.tsx",
+    "frontend/src/pages/SuppliersPage.tsx",
+    "frontend/src/utils/assets.ts",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

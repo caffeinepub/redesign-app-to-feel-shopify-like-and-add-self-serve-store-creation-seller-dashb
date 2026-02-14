@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Build a Shopify-like e-commerce platform with full Shopify-style UI/UX and functionality, enabling anyone to create and run an online store (multi-store/multi-seller).",
+  "architectural_notes": [
+    "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Modern minimalist ecommerce logo mark + wordmark, neutral palette with an emerald (or similar non-blue/purple) accent (shop-logo.dim_512x128.png)\n- Wide hero banner illustration in a clean ecommerce style (no text), suitable for a homepage hero background (hero-banner.dim_1600x600.png)\n- Neutral product placeholder image (simple studio backdrop) (product-placeholder.dim_400x400.png)",
+  "existing_features": [
+    {
+      "id": "feature-apply-a-cohesive-shopify-like-visual-design-system-across-the-app-home-header-footer-products-suppliers-cart-checkout-payment-success-failure-with-consistent-spacing-typography-and-component-styling-use-english-for-all-user-facing-text",
+      "title": "Apply a cohesive, Shopify-like visual design system across the app (Home, Header, Footer, Products, Suppliers, Cart, Checkout, Payment Success/Failure) with consistent spacing, typography, and component styling; use English for all user-facing text.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-choose-and-enforce-one-distinct-visual-theme-colors-typography-layout-that-is-not-blue-purple-dominant-and-update-tailwind-theme-tokens-accordingly-so-the-whole-ui-matches-including-gradients-currently-used-in-homepage-header",
+      "title": "Choose and enforce ONE distinct visual theme (colors, typography, layout) that is not blue/purple-dominant, and update Tailwind/theme tokens accordingly so the whole UI matches (including gradients currently used in HomePage/Header).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-self-serve-create-store-seller-onboarding-flow-so-any-authenticated-user-can-open-a-store-on-the-platform-by-creating-updating-their-supplier-profile-store-name-description-contact-info",
+      "title": "Add a self-serve “Create Store” (seller onboarding) flow so any authenticated user can open a store on the platform by creating/updating their supplier profile (store name, description, contact info).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-seller-dashboard-that-is-accessible-only-to-users-who-have-a-supplier-profile-store-created-and-provides-store-overview-list-of-their-products-and-actions-to-add-update-delete-products",
+      "title": "Implement a seller dashboard that is accessible only to users who have a supplier profile (store created) and provides: store overview, list of their products, and actions to add/update/delete products.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-upgrade-the-storefront-browsing-experience-to-be-shopify-like-improve-products-and-suppliers-pages-with-better-merchandising-ui-filters-sorting-remain-and-add-navigation-from-suppliers-to-a-supplier-specific-product-listing",
+      "title": "Upgrade the storefront browsing experience to be Shopify-like: improve Products and Suppliers pages with better merchandising UI (filters/sorting remain), and add navigation from Suppliers to a supplier-specific product listing.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-and-use-required-static-generated-images-under-frontend-public-assets-generated-and-update-ui-to-use-them-consistently-where-appropriate-brand-hero-placeholders",
+      "title": "Add and use required static generated images under frontend/public/assets/generated, and update UI to use them consistently where appropriate (brand + hero + placeholders).",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Redesign the site to be Shopify-like (full Shopify-style UI/UX and theme across pages)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Enable anyone to create an online store on the platform (multi-store/multi-seller store creation flow)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add Product and Add Store sections with role-based access control (initially requested: only dropshippers can access)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Seller/Dropshipper dashboard for managing store and products",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Storefront pages that visitors can browse (product listings, product details, etc.)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Checkout flow similar to Shopify (e.g., Stripe integration)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Add backend endpoints needed to support seller dashboard ergonomics without requiring the frontend to pass principals manually (e.g., getCallerSupplierProfile and getCallerSupplierProducts) and wire them into new React Query hooks.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Redesign app to feel Shopify-like and add self-serve store creation + seller dashboard",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
