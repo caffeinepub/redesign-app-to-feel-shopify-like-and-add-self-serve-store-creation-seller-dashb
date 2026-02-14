@@ -16,12 +16,19 @@ export class ExternalBlob {
 }
 export interface Product {
     id: ProductId;
+    categoryId: CategoryId;
     stockQuantity: bigint;
     name: string;
     description: string;
     price: bigint;
     supplierId: SupplierId;
     images: Array<ExternalBlob>;
+}
+export interface Category {
+    id: CategoryId;
+    name: string;
+    createdBy: SupplierId;
+    description: string;
 }
 export interface TransformationOutput {
     status: bigint;
@@ -69,6 +76,7 @@ export interface TransformationInput {
     response: http_request_result;
 }
 export type SupplierId = Principal;
+export type CategoryId = string;
 export type StripeSessionStatus = {
     __kind__: "completed";
     completed: {
@@ -97,13 +105,15 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addProduct(name: string, description: string, price: bigint, stockQuantity: bigint): Promise<ProductId>;
+    addCategory(name: string, description: string): Promise<CategoryId>;
+    addProduct(categoryId: CategoryId, name: string, description: string, price: bigint, stockQuantity: bigint): Promise<ProductId>;
     addToCart(productId: ProductId, quantity: bigint): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     clearCart(): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;
     createOrder(items: Array<OrderItem>, totalAmount: bigint): Promise<string>;
     deleteProduct(productId: ProductId): Promise<void>;
+    getAllCategories(): Promise<Array<Category>>;
     getAllOrders(): Promise<Array<Order>>;
     getAllProducts(): Promise<Array<Product>>;
     getAllSuppliers(): Promise<Array<SupplierProfile>>;
@@ -111,9 +121,11 @@ export interface backendInterface {
     getCallerSupplierProfile(): Promise<SupplierProfile | null>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getCategory(id: CategoryId): Promise<Category | null>;
     getCustomerOrders(): Promise<Array<Order>>;
     getOrder(id: string): Promise<Order | null>;
     getProduct(id: ProductId): Promise<Product | null>;
+    getProductsByCategory(categoryId: CategoryId): Promise<Array<Product>>;
     getStripeSessionStatus(sessionId: string): Promise<StripeSessionStatus>;
     getSupplier(id: SupplierId): Promise<SupplierProfile | null>;
     getSupplierProducts(supplierId: SupplierId): Promise<Array<Product>>;
@@ -126,7 +138,7 @@ export interface backendInterface {
     transform(input: TransformationInput): Promise<TransformationOutput>;
     updateExistingSupplier(name: string, description: string, contactInfo: string): Promise<SupplierProfile>;
     updateOrderStatus(orderId: string, paymentStatus: string): Promise<void>;
-    updateProduct(productId: ProductId, name: string, description: string, price: bigint, stockQuantity: bigint): Promise<void>;
+    updateProduct(productId: ProductId, name: string, description: string, categoryId: CategoryId, price: bigint, stockQuantity: bigint): Promise<void>;
     updateProductStock(productId: ProductId, newQuantity: bigint): Promise<void>;
     updateSupplier(name: string, description: string, contactInfo: string): Promise<void>;
 }

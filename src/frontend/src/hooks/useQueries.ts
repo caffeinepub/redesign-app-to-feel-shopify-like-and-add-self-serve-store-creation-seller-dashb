@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { Principal } from '@dfinity/principal';
-import type { ShoppingItem, UserProfile, Product, SupplierProfile, Order, OrderItem } from '../backend';
+import type { ShoppingItem, UserProfile, Product, SupplierProfile, Order, OrderItem, Category, ExternalBlob } from '../backend';
 
 export type CheckoutSession = {
   id: string;
@@ -126,6 +126,20 @@ export function useGetCallerSupplierProfile() {
   });
 }
 
+export function useGetSupplier(supplierId: string) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<SupplierProfile | null>({
+    queryKey: ['supplier', supplierId],
+    queryFn: async () => {
+      if (!actor) return null;
+      const principal = Principal.fromText(supplierId);
+      return actor.getSupplier(principal);
+    },
+    enabled: !!actor && !isFetching && !!supplierId,
+  });
+}
+
 export function useGetAllSuppliers() {
   const { actor, isFetching } = useActor();
 
@@ -169,6 +183,33 @@ export function useUpdateExistingSupplier() {
       queryClient.invalidateQueries({ queryKey: ['suppliers'] });
       queryClient.invalidateQueries({ queryKey: ['callerSupplierProfile'] });
     },
+  });
+}
+
+// Category Management
+export function useGetAllCategories() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllCategories();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetProductsByCategory(categoryId: string) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Product[]>({
+    queryKey: ['products', 'category', categoryId],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getProductsByCategory(categoryId);
+    },
+    enabled: !!actor && !isFetching && !!categoryId,
   });
 }
 
@@ -218,9 +259,22 @@ export function useAddProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { name: string; description: string; price: bigint; stockQuantity: bigint }) => {
+    mutationFn: async (data: { 
+      categoryId: string;
+      name: string; 
+      description: string; 
+      price: bigint; 
+      stockQuantity: bigint;
+      images?: ExternalBlob[];
+    }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.addProduct(data.name, data.description, data.price, data.stockQuantity);
+      return actor.addProduct(
+        data.categoryId,
+        data.name, 
+        data.description, 
+        data.price, 
+        data.stockQuantity
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -234,9 +288,24 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { productId: string; name: string; description: string; price: bigint; stockQuantity: bigint }) => {
+    mutationFn: async (data: { 
+      productId: string; 
+      categoryId: string;
+      name: string; 
+      description: string; 
+      price: bigint; 
+      stockQuantity: bigint;
+      images?: ExternalBlob[];
+    }) => {
       if (!actor) throw new Error('Actor not available');
-      await actor.updateProduct(data.productId, data.name, data.description, data.price, data.stockQuantity);
+      await actor.updateProduct(
+        data.productId, 
+        data.name, 
+        data.description, 
+        data.categoryId,
+        data.price, 
+        data.stockQuantity
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });

@@ -11,9 +11,9 @@ import Stripe "stripe/stripe";
 import OutCall "http-outcalls/outcall";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 actor {
   include MixinStorage();
 
@@ -22,6 +22,7 @@ actor {
 
   type SupplierId = Principal;
   type ProductId = Text;
+  type CategoryId = Text;
   type CustomerId = Principal;
 
   public type UserProfile = {
@@ -40,11 +41,19 @@ actor {
   public type Product = {
     id : ProductId;
     supplierId : SupplierId;
+    categoryId : CategoryId;
     name : Text;
     description : Text;
     price : Nat;
     images : [Storage.ExternalBlob];
     stockQuantity : Nat;
+  };
+
+  public type Category = {
+    id : CategoryId;
+    name : Text;
+    description : Text;
+    createdBy : SupplierId;
   };
 
   public type OrderItem = {
@@ -76,6 +85,7 @@ actor {
   let userProfiles = Map.empty<Principal, UserProfile>();
   let suppliers = Map.empty<SupplierId, SupplierProfile>();
   let products = Map.empty<ProductId, Product>();
+  let categories = Map.empty<CategoryId, Category>();
   let orders = Map.empty<Text, Order>();
   let carts = Map.empty<CustomerId, List.List<CartItem>>();
 
@@ -252,8 +262,34 @@ actor {
     };
   };
 
+  // Category Management
+  public shared ({ caller }) func addCategory(name : Text, description : Text) : async CategoryId {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only authenticated users can add categories");
+    };
+
+    let categoryId = name.concat("-").concat(Int.toText(Time.now()));
+    let category : Category = {
+      id = categoryId;
+      name;
+      description;
+      createdBy = caller;
+    };
+
+    categories.add(categoryId, category);
+    categoryId;
+  };
+
+  public query func getCategory(id : CategoryId) : async ?Category {
+    categories.get(id);
+  };
+
+  public query func getAllCategories() : async [Category] {
+    categories.values().toArray();
+  };
+
   // Inventory Management
-  public shared ({ caller }) func addProduct(name : Text, description : Text, price : Nat, stockQuantity : Nat) : async ProductId {
+  public shared ({ caller }) func addProduct(categoryId : CategoryId, name : Text, description : Text, price : Nat, stockQuantity : Nat) : async ProductId {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only authenticated users can add products");
     };
@@ -266,6 +302,7 @@ actor {
         let product : Product = {
           id = productId;
           supplierId = caller;
+          categoryId;
           name;
           description;
           price;
@@ -279,7 +316,7 @@ actor {
     };
   };
 
-  public shared ({ caller }) func updateProduct(productId : ProductId, name : Text, description : Text, price : Nat, stockQuantity : Nat) : async () {
+  public shared ({ caller }) func updateProduct(productId : ProductId, name : Text, description : Text, categoryId : CategoryId, price : Nat, stockQuantity : Nat) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only authenticated users can update products");
     };
@@ -295,6 +332,7 @@ actor {
         let updated : Product = {
           id = productId;
           supplierId = existing.supplierId;
+          categoryId;
           name;
           description;
           price;
@@ -340,6 +378,7 @@ actor {
         let updated : Product = {
           id = existing.id;
           supplierId = existing.supplierId;
+          categoryId = existing.categoryId;
           name = existing.name;
           description = existing.description;
           price = existing.price;
@@ -361,6 +400,11 @@ actor {
 
   public query ({ caller }) func getSupplierProducts(supplierId : SupplierId) : async [Product] {
     products.values().filter(func(p : Product) : Bool { p.supplierId == supplierId }).toArray();
+  };
+
+  // Filter Products by Category - Available to all users including guests for browsing
+  public query func getProductsByCategory(categoryId : CategoryId) : async [Product] {
+    products.values().filter(func(p : Product) : Bool { p.categoryId == categoryId }).toArray();
   };
 
   // Cart/Shopping Cart Operations
@@ -407,6 +451,7 @@ actor {
           let updatedProduct : Product = {
             id = product.id;
             supplierId = product.supplierId;
+            categoryId = product.categoryId;
             name = product.name;
             description = product.description;
             price = product.price;
@@ -495,7 +540,12 @@ actor {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only authenticated users can access dashboard");
     };
-    suppliers.get(caller);
+
+    // Verify caller is actually a supplier
+    switch (suppliers.get(caller)) {
+      case (null) { Runtime.trap("Unauthorized: Only registered suppliers can access supplier dashboard") };
+      case (?profile) { ?profile };
+    };
   };
 
   // Fetch all products belonging to the caller (seller)
@@ -504,6 +554,12 @@ actor {
       Runtime.trap("Unauthorized: Only authenticated users can access dashboard");
     };
 
-    products.values().filter(func(p : Product) : Bool { p.supplierId == caller }).toArray();
+    // Verify caller is actually a supplier
+    switch (suppliers.get(caller)) {
+      case (null) { Runtime.trap("Unauthorized: Only registered suppliers can access supplier dashboard") };
+      case (?profile) {
+        products.values().filter(func(p : Product) : Bool { p.supplierId == caller }).toArray();
+      };
+    };
   };
 };

@@ -3,9 +3,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '../ui/skeleton';
-import { Edit, Trash2, Package } from 'lucide-react';
+import { Input } from '../ui/input';
+import { Edit, Trash2, Package, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
-import { useDeleteProduct } from '../../hooks/useQueries';
+import { useDeleteProduct, useUpdateProductStock } from '../../hooks/useQueries';
 import type { Product } from '../../backend';
 import ProductFormDialog from './ProductFormDialog';
 import {
@@ -27,7 +28,10 @@ interface SellerProductListProps {
 export default function SellerProductList({ products, isLoading }: SellerProductListProps) {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [editingStockId, setEditingStockId] = useState<string | null>(null);
+  const [stockValue, setStockValue] = useState<string>('');
   const deleteProduct = useDeleteProduct();
+  const updateStock = useUpdateProductStock();
 
   const handleDelete = async () => {
     if (!deletingProductId) return;
@@ -39,6 +43,37 @@ export default function SellerProductList({ products, isLoading }: SellerProduct
     } catch (error) {
       console.error('Delete error:', error);
       toast.error('Failed to delete product');
+    }
+  };
+
+  const startEditingStock = (product: Product) => {
+    setEditingStockId(product.id);
+    setStockValue(Number(product.stockQuantity).toString());
+  };
+
+  const cancelEditingStock = () => {
+    setEditingStockId(null);
+    setStockValue('');
+  };
+
+  const saveStock = async (productId: string) => {
+    const newQuantity = parseInt(stockValue);
+    if (isNaN(newQuantity) || newQuantity < 0) {
+      toast.error('Please enter a valid stock quantity');
+      return;
+    }
+
+    try {
+      await updateStock.mutateAsync({
+        productId,
+        newQuantity: BigInt(newQuantity),
+      });
+      toast.success('Stock updated successfully');
+      setEditingStockId(null);
+      setStockValue('');
+    } catch (error) {
+      console.error('Stock update error:', error);
+      toast.error('Failed to update stock');
     }
   };
 
@@ -91,7 +126,44 @@ export default function SellerProductList({ products, isLoading }: SellerProduct
                 <TableCell className="font-medium">
                   ${(Number(product.price) / 100).toFixed(2)}
                 </TableCell>
-                <TableCell>{Number(product.stockQuantity)}</TableCell>
+                <TableCell>
+                  {editingStockId === product.id ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        type="number"
+                        min="0"
+                        value={stockValue}
+                        onChange={(e) => setStockValue(e.target.value)}
+                        className="w-20 h-8"
+                        autoFocus
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => saveStock(product.id)}
+                        disabled={updateStock.isPending}
+                      >
+                        <Check className="h-4 w-4 text-green-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={cancelEditingStock}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => startEditingStock(product)}
+                      className="hover:underline"
+                    >
+                      {Number(product.stockQuantity)}
+                    </button>
+                  )}
+                </TableCell>
                 <TableCell>
                   {Number(product.stockQuantity) === 0 ? (
                     <Badge variant="destructive">Out of Stock</Badge>

@@ -1,251 +1,42 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Shopify-like redesign with self-serve store creation and seller dashboard (frontend-only)",
+  "title": "Authenticated home-route redirect to seller dashboard with onboarding precedence",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Apply a cohesive Shopify-like design system (layout, typography, components, empty/loading states) across all existing pages in English.",
+      "id": "REQ-24",
+      "summary": "Redirect authenticated users away from / to /seller-dashboard so the public landing page never renders for authenticated users.",
       "acceptanceCriteria": [
-        "All existing pages render with a consistent theme (no mixed styles between pages).",
-        "All visible UI text is in English.",
-        "Design includes a modern ecommerce layout: sticky header, clear primary CTA styling, consistent cards/forms/buttons, and polished empty/loading states."
+        "Given an authenticated user, when they navigate to /, they are redirected to /seller-dashboard without seeing the landing page UI.",
+        "Given an unauthenticated user, when they navigate to /, they still see the public landing page as before.",
+        "Navigating directly to non-home routes (e.g., /products, /suppliers, /seller-dashboard) continues to behave as it does today (protected by auth gating where applicable)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Header.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Restyle header to feel like a modern ecommerce sticky nav (consistent spacing, nav/link states, CTA styling), ensure all text is English, and align styling with global theme tokens. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/Footer.tsx",
-          "operation": "modify",
-          "description": "Restyle footer to match the global design system (layout, muted links, spacing) and ensure all user-facing text remains English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Update Home to a Shopify-like ecommerce hero + feature layout using shared tokens and consistent button/card styling; add polished empty/loading-friendly sections where needed; ensure all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/ProductsPage.tsx",
-          "operation": "modify",
-          "description": "Unify Products page merchandising UI (grid rhythm, card hierarchy, pricing emphasis, consistent badges, skeleton/empty states) to match the design system; ensure all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/SuppliersPage.tsx",
-          "operation": "modify",
-          "description": "Unify Suppliers page card layout, content hierarchy, skeleton/empty states, and action styling to match the design system; ensure all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/CartPage.tsx",
-          "operation": "modify",
-          "description": "Align Cart page visuals with the design system (consistent card padding, price typography, button variants, empty state polish) and ensure all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/CheckoutPage.tsx",
-          "operation": "modify",
-          "description": "Align Checkout page visuals with the design system and improve error/loading UX (processing state, validation messaging), ensuring all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/PaymentSuccessPage.tsx",
-          "operation": "modify",
-          "description": "Update Payment Success visuals to match the app-wide ecommerce design language (card style, tone, spacing) and ensure all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/PaymentFailurePage.tsx",
-          "operation": "modify",
-          "description": "Update Payment Failure visuals to match the app-wide ecommerce design language (card style, tone, spacing) and ensure all text is English. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/AccessDeniedScreen.tsx",
-          "operation": "modify",
-          "description": "Ensure access-denied/login screen matches the global theme and uses consistent button/typography styles in English. Verify the component's usage instructions before implementing."
+          "description": "Update RootLayout redirect logic so that when Internet Identity is present (authenticated state from the authorization component via useInternetIdentity—verify the component's usage instructions before implementing) and the current route is '/', the app navigates to '/seller-dashboard' unless an onboarding redirect target is present. Add a render guard for the '/' route while redirecting to prevent the landing page UI from flashing for authenticated users; keep all other route gating unchanged."
         }
       ]
     },
     {
-      "id": "REQ-2",
-      "summary": "Choose one non-blue/purple-dominant theme (emerald-accent neutral) and enforce it via global tokens and Tailwind theme usage across the UI.",
+      "id": "REQ-25",
+      "summary": "Preserve onboarding redirect behavior and ensure it takes precedence over the new authenticated / -> /seller-dashboard redirect.",
       "acceptanceCriteria": [
-        "Theme tokens in global CSS are updated to match the chosen theme, and pages/components use those tokens rather than hard-coded purple gradients.",
-        "Header brand styling and Home hero styling are updated to match the new theme.",
-        "Light and dark mode remain usable (contrast and readability)."
+        "If onboardingStorage has a redirect target set (e.g., /seller-dashboard) and the user completes login, the app navigates to that target and clears the stored redirect target.",
+        "If onboardingStorage has a redirect target set to a non-home route, that target is used after login even if the user lands on /.",
+        "After redirect, refreshing the app while still authenticated does not show the landing page at /; it redirects to /seller-dashboard."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/utils/onboardingStorage.ts",
           "operation": "modify",
-          "description": "Replace current purple/blue-dominant OKLCH tokens with a single cohesive neutral + emerald (non-blue/purple) primary palette for light/dark, including ring/chart accents, keeping contrast readable. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/tailwind.config.js",
-          "operation": "modify",
-          "description": "Adjust Tailwind theme usage (if needed) so components consistently rely on token-driven colors (primary/ring/accent/chart) and avoid hard-coded purple gradients; ensure dark mode remains usable. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Remove brand text gradient that uses purple and replace with theme-token-driven brand styling aligned to the chosen palette; keep sticky header behavior. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Remove purple gradient hero backgrounds and replace with theme-token-driven styling aligned to the chosen palette, while preserving a strong hero layout and CTAs. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Add a self-serve Create Store (seller onboarding) flow for authenticated users to create or update their supplier profile.",
-      "acceptanceCriteria": [
-        "A new UI entry point exists (e.g., in Header navigation or a prominent dashboard CTA) for authenticated users to create a store.",
-        "If the user already has a supplier profile, the UI shows an edit/update form instead of a create form.",
-        "Successful create/update shows a clear success state and the user can proceed to seller features."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/CreateStorePage.tsx",
-          "operation": "create",
-          "description": "Create a Create Store page that loads the caller's supplier profile and renders a create-or-edit form (store name, description, contact info) with success state and a CTA to proceed to the seller dashboard. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add React Query hooks for supplier onboarding ergonomics: useGetCallerSupplierProfile and a create/update mutation that chooses register vs update based on whether a profile exists; ensure query invalidation keeps UI in sync. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Add a navigation entry point for authenticated users to Create Store / Seller Dashboard (label and destination based on whether they have a supplier profile). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Add a prominent CTA section for authenticated users to create a store (or go to seller dashboard if already a seller), matching the Shopify-like hero/CTA styling. Verify the component's usage instructions before implementing."
+          "description": "Add a small helper (e.g., a 'consume' method) to atomically read and clear the stored onboarding redirect target to avoid conflicts/double-navigation when multiple redirect conditions are evaluated."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Register and wire the Create Store route into the TanStack Router tree so it is navigable from Header/Home CTAs. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Implement a seller-only dashboard with store overview, seller’s product list, and product add/update/delete actions with route guarding.",
-      "acceptanceCriteria": [
-        "Non-sellers (no supplier profile) are prevented from accessing seller dashboard routes and are shown an in-app prompt to create a store.",
-        "Sellers can view a list of only their products (not all products).",
-        "Sellers can add a product (name, description, price, stock quantity), update it, and delete it; the Products listing reflects changes after mutations."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/SellerDashboardPage.tsx",
-          "operation": "create",
-          "description": "Create a seller dashboard page that (1) guards access using caller supplier profile, (2) shows store overview, (3) lists only the caller’s products, and (4) provides add/edit/delete actions with clear success/error states. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/seller/ProductFormDialog.tsx",
-          "operation": "create",
-          "description": "Create a composed dialog component (using existing shadcn/ui primitives without editing them) for adding/updating a product (name, description, price, stock quantity) with validation and mutation wiring. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/seller/SellerProductList.tsx",
-          "operation": "create",
-          "description": "Create a seller product list/table component used by the dashboard to display only the caller’s products with edit/delete actions and appropriate empty/loading states. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add hooks for seller dashboard data: useGetCallerSupplierProducts and ensure add/update/delete product mutations invalidate both global product lists and seller-scoped product queries so lists reflect changes after mutations. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register and wire the seller dashboard route into the router tree; ensure navigation exists and route is not orphaned. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Add Seller Dashboard navigation entry, and ensure non-sellers are directed to Create Store instead of being shown seller-only options. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Upgrade storefront browsing to be more Shopify-like and add Suppliers → supplier-specific product listing navigation while preserving search/sort/filter behavior.",
-      "acceptanceCriteria": [
-        "Suppliers page has a working “View Products” action that takes the user to a filtered product list for that supplier.",
-        "Products page layout looks like a modern storefront (improved grid, product media, pricing emphasis, consistent badges).",
-        "Existing search and sorting continue to work."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/SuppliersPage.tsx",
-          "operation": "modify",
-          "description": "Wire the Suppliers “View Products” action to navigate to a supplier-filtered product listing (e.g., via route search params) and ensure the action is functional and styled consistently. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/ProductsPage.tsx",
-          "operation": "modify",
-          "description": "Add support for supplier-filtered browsing (read supplier id from route/search params), keep existing search/sort working, and improve merchandising UI with better media/price/badges layout and consistent skeleton/empty states. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/utils/urlParams.ts",
-          "operation": "modify",
-          "description": "Extend URL param helpers (if needed) to support a supplier filter param used for supplier-specific product browsing, keeping behavior consistent and easy to clear. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Add required static generated images and use them consistently for brand, hero, and product placeholders.",
-      "acceptanceCriteria": [
-        "All required images are placed at frontend/public/assets/generated and referenced directly from the frontend.",
-        "Product cards do not show broken images (a placeholder is always displayed if no product image exists).",
-        "Header branding uses the generated logo asset (or an icon+logo lockup)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/public/assets/generated/shop-logo.dim_512x128.png",
-          "operation": "create",
-          "description": "Add the required generated logo asset at the exact path frontend/public/assets/generated/shop-logo.dim_512x128.png and prepare UI to reference it directly. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/public/assets/generated/hero-banner.dim_1600x600.png",
-          "operation": "create",
-          "description": "Add the required generated hero banner asset at the exact path frontend/public/assets/generated/hero-banner.dim_1600x600.png and prepare UI to reference it directly. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/public/assets/generated/product-placeholder.dim_400x400.png",
-          "operation": "create",
-          "description": "Add the required generated product placeholder asset at the exact path frontend/public/assets/generated/product-placeholder.dim_400x400.png and ensure UI uses it as a safe fallback. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/utils/assets.ts",
-          "operation": "create",
-          "description": "Create a small asset-path constants module to centralize references for frontend/public/assets/generated/shop-logo.dim_512x128.png, frontend/public/assets/generated/hero-banner.dim_1600x600.png, and frontend/public/assets/generated/product-placeholder.dim_400x400.png. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/Header.tsx",
-          "operation": "modify",
-          "description": "Update header branding to use the generated logo at frontend/public/assets/generated/shop-logo.dim_512x128.png (logo/wordmark lockup) and ensure it matches the chosen theme. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Update home hero to use the generated hero banner at frontend/public/assets/generated/hero-banner.dim_1600x600.png consistently with the new theme and layout. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/ProductsPage.tsx",
-          "operation": "modify",
-          "description": "Ensure product cards always show a valid image: render first product image when available and otherwise fallback to frontend/public/assets/generated/product-placeholder.dim_400x400.png to avoid broken images. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/CartPage.tsx",
-          "operation": "modify",
-          "description": "Ensure cart item thumbnails never break by falling back to frontend/public/assets/generated/product-placeholder.dim_400x400.png when item.image is missing/invalid. Verify the component's usage instructions before implementing."
+          "description": "Refactor the post-login/on-auth redirect effect to use the onboardingStorage consume helper and enforce precedence: if a redirect target exists, navigate to it and clear it; otherwise, if authenticated and on '/', navigate to '/seller-dashboard'. Ensure this logic cooperates with Internet Identity auth state from the authorization component (verify the component's usage instructions before implementing) and does not alter authentication gating for any non-home routes."
         }
       ]
     }

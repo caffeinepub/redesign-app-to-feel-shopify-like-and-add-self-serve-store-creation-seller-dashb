@@ -68,7 +68,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-3">
-            <img src={ASSETS.logo} alt="ShopHub" className="h-8 w-auto" />
+            <img src={ASSETS.logo} alt="Shanju" className="h-8 w-auto" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
@@ -102,27 +102,28 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          {isAuthenticated && userProfile && (
-            <span className="hidden sm:inline text-sm text-muted-foreground">
-              Welcome, <span className="font-medium text-foreground">{userProfile.name}</span>
-            </span>
+          {isAuthenticated && (
+            <>
+              <span className="hidden sm:inline text-sm text-muted-foreground">
+                {userProfile?.name || 'User'}
+              </span>
+              <Link to="/cart" className="relative">
+                <Button variant="ghost" size="icon">
+                  <ShoppingCart className="h-5 w-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+            </>
           )}
-
-          <Link to="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
-                  {cartCount}
-                </span>
-              )}
-            </Button>
-          </Link>
 
           <Button
             onClick={handleAuth}
             disabled={isLoggingIn}
-            variant={isAuthenticated ? 'outline' : 'default'}
+            variant={isAuthenticated ? "outline" : "default"}
             size="sm"
           >
             {isLoggingIn ? 'Logging in...' : isAuthenticated ? 'Logout' : 'Login'}

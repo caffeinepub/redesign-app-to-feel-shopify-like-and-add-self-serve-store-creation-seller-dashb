@@ -10,6 +10,13 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface Category {
+  'id' : CategoryId,
+  'name' : string,
+  'createdBy' : SupplierId,
+  'description' : string,
+}
+export type CategoryId = string;
 export type CustomerId = Principal;
 export type ExternalBlob = Uint8Array;
 export interface Order {
@@ -27,6 +34,7 @@ export interface OrderItem {
 }
 export interface Product {
   'id' : ProductId,
+  'categoryId' : CategoryId,
   'stockQuantity' : bigint,
   'name' : string,
   'description' : string,
@@ -108,7 +116,11 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addProduct' : ActorMethod<[string, string, bigint, bigint], ProductId>,
+  'addCategory' : ActorMethod<[string, string], CategoryId>,
+  'addProduct' : ActorMethod<
+    [CategoryId, string, string, bigint, bigint],
+    ProductId
+  >,
   'addToCart' : ActorMethod<[ProductId, bigint], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'clearCart' : ActorMethod<[], undefined>,
@@ -118,6 +130,7 @@ export interface _SERVICE {
   >,
   'createOrder' : ActorMethod<[Array<OrderItem>, bigint], string>,
   'deleteProduct' : ActorMethod<[ProductId], undefined>,
+  'getAllCategories' : ActorMethod<[], Array<Category>>,
   'getAllOrders' : ActorMethod<[], Array<Order>>,
   'getAllProducts' : ActorMethod<[], Array<Product>>,
   'getAllSuppliers' : ActorMethod<[], Array<SupplierProfile>>,
@@ -125,9 +138,11 @@ export interface _SERVICE {
   'getCallerSupplierProfile' : ActorMethod<[], [] | [SupplierProfile]>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCategory' : ActorMethod<[CategoryId], [] | [Category]>,
   'getCustomerOrders' : ActorMethod<[], Array<Order>>,
   'getOrder' : ActorMethod<[string], [] | [Order]>,
   'getProduct' : ActorMethod<[ProductId], [] | [Product]>,
+  'getProductsByCategory' : ActorMethod<[CategoryId], Array<Product>>,
   'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,
   'getSupplier' : ActorMethod<[SupplierId], [] | [SupplierProfile]>,
   'getSupplierProducts' : ActorMethod<[SupplierId], Array<Product>>,
@@ -144,7 +159,7 @@ export interface _SERVICE {
   >,
   'updateOrderStatus' : ActorMethod<[string, string], undefined>,
   'updateProduct' : ActorMethod<
-    [ProductId, string, string, bigint, bigint],
+    [ProductId, string, string, CategoryId, bigint, bigint],
     undefined
   >,
   'updateProductStock' : ActorMethod<[ProductId, bigint], undefined>,

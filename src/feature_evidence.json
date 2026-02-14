@@ -2,19 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-apply-a-cohesive-shopify-like-visual-design-system-across-the-app-home-header-footer-products-suppliers-cart-checkout-payment-success-failure-with-consistent-spacing-typography-and-component-styling-use-english-for-all-user-facing-text",
-      "featureTitle": "Apply a cohesive, Shopify-like visual design system across the app (Home, Header, Footer, Products, Suppliers, Cart, Checkout, Payment Success/Failure) with consistent spacing, typography, and component styling; use English for all user-facing text.",
+      "featureId": "feature-when-a-user-is-authenticated-internet-identity-is-present-and-visits-the-home-route-automatically-redirect-them-to-the-seller-dashboard-route-seller-dashboard-so-the-public-landing-page-never-renders-for-authenticated-users",
+      "featureTitle": "When a user is authenticated (Internet Identity is present) and visits the home route (/), automatically redirect them to the seller dashboard route (/seller-dashboard) so the public landing page never renders for authenticated users.",
       "files": [
-        "frontend/src/components/AccessDeniedScreen.tsx",
-        "frontend/src/components/Footer.tsx",
-        "frontend/src/components/Header.tsx",
-        "frontend/src/pages/CartPage.tsx",
-        "frontend/src/pages/CheckoutPage.tsx",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/src/pages/PaymentFailurePage.tsx",
-        "frontend/src/pages/PaymentSuccessPage.tsx",
-        "frontend/src/pages/ProductsPage.tsx",
-        "frontend/src/pages/SuppliersPage.tsx"
+        "frontend/src/App.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -28,44 +19,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-24"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-choose-and-enforce-one-distinct-visual-theme-colors-typography-layout-that-is-not-blue-purple-dominant-and-update-tailwind-theme-tokens-accordingly-so-the-whole-ui-matches-including-gradients-currently-used-in-homepage-header",
-      "featureTitle": "Choose and enforce ONE distinct visual theme (colors, typography, layout) that is not blue/purple-dominant, and update Tailwind/theme tokens accordingly so the whole UI matches (including gradients currently used in HomePage/Header).",
-      "files": [
-        "frontend/src/components/Header.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-self-serve-create-store-seller-onboarding-flow-so-any-authenticated-user-can-open-a-store-on-the-platform-by-creating-updating-their-supplier-profile-store-name-description-contact-info",
-      "featureTitle": "Add a self-serve “Create Store” (seller onboarding) flow so any authenticated user can open a store on the platform by creating/updating their supplier profile (store name, description, contact info).",
+      "featureId": "feature-ensure-the-existing-onboarding-redirect-logic-onboardingstorage-redirect-target-set-by-the-landing-page-start-free-trial-continues-to-work-and-that-it-does-not-conflict-with-the-new-authenticated-seller-dashboard-redirect-i-e-onboarding-redirect-should-still-take-precedence-when-present",
+      "featureTitle": "Ensure the existing onboarding redirect logic (onboardingStorage redirect target set by the landing page 'Start free trial') continues to work, and that it does not conflict with the new authenticated / -> /seller-dashboard redirect (i.e., onboarding redirect should still take precedence when present).",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/components/Header.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/CreateStorePage.tsx",
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/src/utils/onboardingStorage.ts"
       ],
       "components": [
         "authorization@4.0.0",
@@ -79,84 +42,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-a-seller-dashboard-that-is-accessible-only-to-users-who-have-a-supplier-profile-store-created-and-provides-store-overview-list-of-their-products-and-actions-to-add-update-delete-products",
-      "featureTitle": "Implement a seller dashboard that is accessible only to users who have a supplier profile (store created) and provides: store overview, list of their products, and actions to add/update/delete products.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/Header.tsx",
-        "frontend/src/components/seller/ProductFormDialog.tsx",
-        "frontend/src/components/seller/SellerProductList.tsx",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/SellerDashboardPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-upgrade-the-storefront-browsing-experience-to-be-shopify-like-improve-products-and-suppliers-pages-with-better-merchandising-ui-filters-sorting-remain-and-add-navigation-from-suppliers-to-a-supplier-specific-product-listing",
-      "featureTitle": "Upgrade the storefront browsing experience to be Shopify-like: improve Products and Suppliers pages with better merchandising UI (filters/sorting remain), and add navigation from Suppliers to a supplier-specific product listing.",
-      "files": [
-        "frontend/src/pages/ProductsPage.tsx",
-        "frontend/src/pages/SuppliersPage.tsx",
-        "frontend/src/utils/urlParams.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-and-use-required-static-generated-images-under-frontend-public-assets-generated-and-update-ui-to-use-them-consistently-where-appropriate-brand-hero-placeholders",
-      "featureTitle": "Add and use required static generated images under frontend/public/assets/generated, and update UI to use them consistently where appropriate (brand + hero + placeholders).",
-      "files": [
-        "frontend/src/components/Header.tsx",
-        "frontend/src/pages/CartPage.tsx",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/src/pages/ProductsPage.tsx",
-        "frontend/src/utils/assets.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "stripe@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
+        "REQ-25"
       ],
       "confidence": "high"
     }

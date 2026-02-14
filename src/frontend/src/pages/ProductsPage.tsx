@@ -8,18 +8,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Skeleton } from '../components/ui/skeleton';
 import { ShoppingCart, Search, Package, X } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGetAllProducts, useGetAllSuppliers } from '../hooks/useQueries';
+import { useGetAllProducts, useGetAllSuppliers, useGetAllCategories } from '../hooks/useQueries';
 import { getSupplierIdFromUrl, clearSupplierFilter } from '../utils/urlParams';
-import { ASSETS } from '../utils/assets';
+import { getProductImageUrl } from '../utils/productImages';
 
 export default function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [supplierFilter, setSupplierFilter] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string>('');
   const navigate = useNavigate();
 
   const { data: products = [], isLoading: productsLoading } = useGetAllProducts();
   const { data: suppliers = [] } = useGetAllSuppliers();
+  const { data: categories = [] } = useGetAllCategories();
 
   useEffect(() => {
     const supplierId = getSupplierIdFromUrl();
@@ -34,7 +36,20 @@ export default function ProductsPage() {
     return map;
   }, [suppliers]);
 
+  const categoryMap = useMemo(() => {
+    const map = new Map<string, string>();
+    categories.forEach(category => {
+      map.set(category.id, category.name);
+    });
+    return map;
+  }, [categories]);
+
   const handleAddToCart = (product: any) => {
+    if (Number(product.stockQuantity) === 0) {
+      toast.error('This product is out of stock');
+      return;
+    }
+
     const stored = localStorage.getItem('cart');
     const cart = stored ? JSON.parse(stored) : [];
     
@@ -45,7 +60,7 @@ export default function ProductsPage() {
       price: Number(product.price),
       quantity: 1,
       supplierName: supplierMap.get(product.supplierId.toString()) || 'Unknown',
-      image: ASSETS.productPlaceholder,
+      image: getProductImageUrl(product),
     };
     
     cart.push(cartItem);
@@ -67,6 +82,12 @@ export default function ProductsPage() {
   if (supplierFilter) {
     filteredProducts = filteredProducts.filter(
       product => product.supplierId.toString() === supplierFilter
+    );
+  }
+
+  if (categoryFilter) {
+    filteredProducts = filteredProducts.filter(
+      product => product.categoryId === categoryFilter
     );
   }
 
@@ -98,24 +119,37 @@ export default function ProductsPage() {
           />
         </div>
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full sm:w-[200px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="name">Name (A-Z)</SelectItem>
-            <SelectItem value="price-low">Price (Low to High)</SelectItem>
-            <SelectItem value="price-high">Price (High to Low)</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="price-low">Price: Low to High</SelectItem>
+            <SelectItem value="price-high">Price: High to Low</SelectItem>
             <SelectItem value="stock">Stock Level</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="All categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All categories</SelectItem>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Active Filter Badge */}
+      {/* Active Filters */}
       {supplierFilter && (
         <div className="mb-6">
-          <Badge variant="secondary" className="gap-2 py-2 px-3">
+          <Badge variant="secondary" className="gap-2">
             Store: {supplierMap.get(supplierFilter) || 'Unknown'}
-            <button onClick={handleClearFilter} className="hover:text-foreground">
+            <button onClick={handleClearFilter} className="hover:text-destructive">
               <X className="h-3 w-3" />
             </button>
           </Badge>
@@ -126,16 +160,12 @@ export default function ProductsPage() {
       {productsLoading && (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
-            <Card key={i} className="flex flex-col">
-              <Skeleton className="aspect-square rounded-t-lg" />
+            <Card key={i}>
               <CardHeader>
-                <Skeleton className="h-4 w-20 mb-2" />
-                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-48 w-full rounded-lg" />
+                <Skeleton className="h-6 w-3/4 mt-4" />
                 <Skeleton className="h-4 w-full" />
               </CardHeader>
-              <CardFooter>
-                <Skeleton className="h-10 w-full" />
-              </CardFooter>
             </Card>
           ))}
         </div>
@@ -144,58 +174,69 @@ export default function ProductsPage() {
       {/* Products Grid */}
       {!productsLoading && sortedProducts.length > 0 && (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {sortedProducts.map((product) => (
-            <Card key={product.id} className="flex flex-col hover:shadow-medium transition-all border-border/50">
-              <CardHeader className="p-0">
-                <div className="aspect-square relative overflow-hidden rounded-t-lg bg-muted">
-                  <img
-                    src={ASSETS.productPlaceholder}
-                    alt={product.name}
-                    className="object-cover w-full h-full"
-                  />
-                  {Number(product.stockQuantity) < 20 && Number(product.stockQuantity) > 0 && (
-                    <Badge variant="destructive" className="absolute top-2 right-2">
-                      Low Stock
+          {sortedProducts.map((product) => {
+            const stock = Number(product.stockQuantity);
+            const isOutOfStock = stock === 0;
+            const isLowStock = stock > 0 && stock < 20;
+
+            return (
+              <Card key={product.id} className="hover:shadow-medium transition-all border-border/50 flex flex-col">
+                <CardHeader className="p-0">
+                  <div className="relative h-48 w-full overflow-hidden rounded-t-lg bg-muted">
+                    <img
+                      src={getProductImageUrl(product)}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {isOutOfStock && (
+                      <Badge variant="destructive" className="absolute top-2 right-2">
+                        Out of Stock
+                      </Badge>
+                    )}
+                    {isLowStock && (
+                      <Badge variant="destructive" className="absolute top-2 right-2">
+                        Low Stock
+                      </Badge>
+                    )}
+                    {product.categoryId && categoryMap.has(product.categoryId) && (
+                      <Badge variant="secondary" className="absolute top-2 left-2">
+                        {categoryMap.get(product.categoryId)}
+                      </Badge>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-1 pt-4">
+                  <CardTitle className="text-lg mb-2 line-clamp-1">{product.name}</CardTitle>
+                  <CardDescription className="line-clamp-2 mb-3">
+                    {product.description}
+                  </CardDescription>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-primary">
+                      ${(Number(product.price) / 100).toFixed(2)}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      {stock} in stock
                     </Badge>
-                  )}
-                  {Number(product.stockQuantity) === 0 && (
-                    <Badge variant="destructive" className="absolute top-2 right-2">
-                      Out of Stock
+                  </div>
+                  <div className="mt-2">
+                    <Badge variant="outline" className="text-xs">
+                      {supplierMap.get(product.supplierId.toString()) || 'Unknown Store'}
                     </Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 p-4">
-                <div className="mb-2">
-                  <Badge variant="outline" className="text-xs">
-                    {supplierMap.get(product.supplierId.toString()) || 'Unknown Store'}
-                  </Badge>
-                </div>
-                <CardTitle className="text-lg mb-2 line-clamp-1">{product.name}</CardTitle>
-                <CardDescription className="line-clamp-2 mb-3">
-                  {product.description}
-                </CardDescription>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">
-                    ${(Number(product.price) / 100).toFixed(2)}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {Number(product.stockQuantity)} in stock
-                  </span>
-                </div>
-              </CardContent>
-              <CardFooter className="p-4 pt-0">
-                <Button
-                  className="w-full gap-2"
-                  onClick={() => handleAddToCart(product)}
-                  disabled={Number(product.stockQuantity) === 0}
-                >
-                  <ShoppingCart className="h-4 w-4" />
-                  {Number(product.stockQuantity) === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="pt-0">
+                  <Button
+                    className="w-full gap-2"
+                    onClick={() => handleAddToCart(product)}
+                    disabled={isOutOfStock}
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       )}
 
@@ -205,13 +246,10 @@ export default function ProductsPage() {
           <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">No Products Found</h3>
           <p className="text-muted-foreground">
-            {searchQuery || supplierFilter ? 'Try adjusting your filters' : 'Products will appear here once stores add them'}
+            {searchQuery || supplierFilter || categoryFilter
+              ? 'Try adjusting your filters or search query'
+              : 'Products will appear here once sellers add them'}
           </p>
-          {supplierFilter && (
-            <Button onClick={handleClearFilter} variant="outline" className="mt-4">
-              Clear Filter
-            </Button>
-          )}
         </div>
       )}
     </div>

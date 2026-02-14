@@ -16,30 +16,35 @@ export default function AdminSeedButton() {
     try {
       const demoProducts = [
         {
+          categoryId: '',
           name: 'Wireless Bluetooth Headphones',
           description: 'Premium noise-cancelling headphones with 30-hour battery life and superior sound quality',
           price: BigInt(7999),
           stockQuantity: BigInt(45),
         },
         {
+          categoryId: '',
           name: 'Smart Fitness Watch',
           description: 'Track your health and fitness with advanced sensors, heart rate monitoring, and GPS',
           price: BigInt(12999),
           stockQuantity: BigInt(23),
         },
         {
+          categoryId: '',
           name: 'Portable Bluetooth Speaker',
           description: 'Waterproof speaker with 360-degree sound and 20-hour battery life',
           price: BigInt(5999),
           stockQuantity: BigInt(67),
         },
         {
+          categoryId: '',
           name: 'USB-C Fast Charger',
           description: '65W fast charging adapter compatible with laptops, tablets, and smartphones',
           price: BigInt(3499),
           stockQuantity: BigInt(120),
         },
         {
+          categoryId: '',
           name: 'Wireless Gaming Mouse',
           description: 'High-precision gaming mouse with customizable RGB lighting and programmable buttons',
           price: BigInt(6999),

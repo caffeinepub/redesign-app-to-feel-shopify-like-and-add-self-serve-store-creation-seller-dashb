@@ -1,153 +1,67 @@
 {
   "kind": "build_request",
-  "title": "Redesign app to feel Shopify-like and add self-serve store creation + seller dashboard",
+  "title": "Skip landing page for authenticated returning users and redirect to dashboard",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Apply a cohesive, Shopify-like visual design system across the app (Home, Header, Footer, Products, Suppliers, Cart, Checkout, Payment Success/Failure) with consistent spacing, typography, and component styling; use English for all user-facing text.",
+      "id": "REQ-24",
+      "text": "When a user is authenticated (Internet Identity is present) and visits the home route (/), automatically redirect them to the seller dashboard route (/seller-dashboard) so the public landing page never renders for authenticated users.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "Shopify এর মতো করে দিন প্লিজ"
+          "হুম হয়েছে সমস্যা আরো একটা এটা হলো প্রথম ফ্রী ট্রায়াল এর মধ্যে লগইন করার পর আর লেন্ডিং পেইজ প্রয়োজন নেই যত বার ডুকবে ডাইরেক্ট ডাসবোর্ডে চলে যাবে লেন্ডিং পেইজ আর শো করবেনা এই রকম করে দিন"
         ]
       },
       "acceptanceCriteria": [
-        "All existing pages render with a consistent theme (no mixed styles between pages).",
-        "All visible UI text is in English.",
-        "Design includes a modern ecommerce layout: sticky header, clear primary CTA styling, consistent cards/forms/buttons, and polished empty/loading states."
+        "Given an authenticated user, when they navigate to /, they are redirected to /seller-dashboard without seeing the landing page UI.",
+        "Given an unauthenticated user, when they navigate to /, they still see the public landing page as before.",
+        "Navigating directly to non-home routes (e.g., /products, /suppliers, /seller-dashboard) continues to behave as it does today (protected by auth gating where applicable)."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Choose and enforce ONE distinct visual theme (colors, typography, layout) that is not blue/purple-dominant, and update Tailwind/theme tokens accordingly so the whole UI matches (including gradients currently used in HomePage/Header).",
+      "id": "REQ-25",
+      "text": "Ensure the existing onboarding redirect logic (onboardingStorage redirect target set by the landing page 'Start free trial') continues to work, and that it does not conflict with the new authenticated / -> /seller-dashboard redirect (i.e., onboarding redirect should still take precedence when present).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4"
         ],
         "quotes": [
-          "Shopify এর মতো সব ডিজাইন করে দিন"
+          "প্রথম ফ্রী ট্রায়াল এর মধ্যে লগইন করার পর আর লেন্ডিং পেইজ প্রয়োজন নেই"
         ]
       },
       "acceptanceCriteria": [
-        "Theme tokens in global CSS are updated to match the chosen theme, and pages/components use those tokens rather than hard-coded purple gradients.",
-        "Header brand styling and Home hero styling are updated to match the new theme.",
-        "Light and dark mode remain usable (contrast and readability)."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Add a self-serve “Create Store” (seller onboarding) flow so any authenticated user can open a store on the platform by creating/updating their supplier profile (store name, description, contact info).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "যাতে যে কে অনলাইন স্টোর খোলতে পারে"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A new UI entry point exists (e.g., in Header navigation or a prominent dashboard CTA) for authenticated users to create a store.",
-        "If the user already has a supplier profile, the UI shows an edit/update form instead of a create form.",
-        "Successful create/update shows a clear success state and the user can proceed to seller features."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Implement a seller dashboard that is accessible only to users who have a supplier profile (store created) and provides: store overview, list of their products, and actions to add/update/delete products.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Shopify এর মতো করে দিন প্লিজ"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Non-sellers (no supplier profile) are prevented from accessing seller dashboard routes and are shown an in-app prompt to create a store.",
-        "Sellers can view a list of only their products (not all products).",
-        "Sellers can add a product (name, description, price, stock quantity), update it, and delete it; the Products listing reflects changes after mutations."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Add backend endpoints needed to support seller dashboard ergonomics without requiring the frontend to pass principals manually (e.g., getCallerSupplierProfile and getCallerSupplierProducts) and wire them into new React Query hooks.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Shopify এর মতো করে দিন প্লিজ"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend exposes a query to fetch the caller’s supplier profile (or null if none).",
-        "Backend exposes a query to fetch only the caller’s products.",
-        "Frontend uses React Query hooks for these endpoints and updates UI correctly after add/update/delete actions."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Upgrade the storefront browsing experience to be Shopify-like: improve Products and Suppliers pages with better merchandising UI (filters/sorting remain), and add navigation from Suppliers to a supplier-specific product listing.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Shopify এর মতো সব ডিজাইন করে দিন"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Suppliers page has a working “View Products” action that takes the user to a filtered product list for that supplier.",
-        "Products page layout looks like a modern storefront (improved grid, product media, pricing emphasis, consistent badges).",
-        "Existing search and sorting continue to work."
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "text": "Add and use required static generated images under frontend/public/assets/generated, and update UI to use them consistently where appropriate (brand + hero + placeholders).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Shopify এর মতো সব ডিজাইন করে দিন"
-        ]
-      },
-      "acceptanceCriteria": [
-        "All required images are placed at frontend/public/assets/generated and referenced directly from the frontend.",
-        "Product cards do not show broken images (a placeholder is always displayed if no product image exists).",
-        "Header branding uses the generated logo asset (or an icon+logo lockup)."
+        "If onboardingStorage has a redirect target set (e.g., /seller-dashboard) and the user completes login, the app navigates to that target and clears the stored redirect target.",
+        "If onboardingStorage has a redirect target set to a non-home route, that target is used after login even if the user lands on /.",
+        "After redirect, refreshing the app while still authenticated does not show the landing page at /; it redirects to /seller-dashboard."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (compose these components instead).",
-    "Do not edit immutable hook/bootstrap files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx.",
-    "Backend must remain a single Motoko actor in backend/main.mo; create backend/migration.mo only if state shape changes require it.",
-    "Use English for any user-facing text."
+    "Do not change the authentication mechanism (must continue using Internet Identity).",
+    "Do not change the existing route paths (/, /seller-dashboard, etc.).",
+    "Keep all other routes’ authentication gating behavior unchanged."
   ],
   "nonGoals": [
-    "Implementing third-party auth providers (only Internet Identity is supported).",
-    "Adding external databases or non-Motoko backend services.",
-    "Implementing real-time features (websockets/chat/push notifications).",
-    "Building a full Shopify theme marketplace or theme editor."
+    "Changing any landing page marketing content or design.",
+    "Adding new backend endpoints or modifying backend data schemas.",
+    "Implementing email-based login or magic link flows."
   ],
   "imageRequirements": {
-    "required": [
-      "Modern minimalist ecommerce logo mark + wordmark, neutral palette with an emerald (or similar non-blue/purple) accent (shop-logo.dim_512x128.png)",
-      "Wide hero banner illustration in a clean ecommerce style (no text), suitable for a homepage hero background (hero-banner.dim_1600x600.png)",
-      "Neutral product placeholder image (simple studio backdrop) (product-placeholder.dim_400x400.png)"
-    ],
+    "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

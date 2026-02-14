@@ -1,13 +1,17 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 15,
   "summary": "Build a Shopify-like e-commerce platform with full Shopify-style UI/UX and functionality, enabling anyone to create and run an online store (multi-store/multi-seller).",
   "architectural_notes": [
-    "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout."
+    "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout.",
+    "Avoid third-party/trademarked branding in UI text; use platform brand name 'Shanju' across landing/marketing surfaces.",
+    "Routing rule: if user is authenticated (already logged in), visiting / should redirect to the dashboard (landing page is only for unauthenticated users)."
   ],
-  "known_issues": [],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Modern minimalist ecommerce logo mark + wordmark, neutral palette with an emerald (or similar non-blue/purple) accent (shop-logo.dim_512x128.png)\n- Wide hero banner illustration in a clean ecommerce style (no text), suitable for a homepage hero background (hero-banner.dim_1600x600.png)\n- Neutral product placeholder image (simple studio backdrop) (product-placeholder.dim_400x400.png)",
+  "known_issues": [
+    "'Start free trial' on the landing page does not actually onboard/authenticate users (no magic link/password/OTP is sent and users cannot reach the dashboard).",
+    "After completing free-trial login, returning users still see the landing page; requirement is to route authenticated users directly to the dashboard on repeat visits."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-apply-a-cohesive-shopify-like-visual-design-system-across-the-app-home-header-footer-products-suppliers-cart-checkout-payment-success-failure-with-consistent-spacing-typography-and-component-styling-use-english-for-all-user-facing-text",
@@ -56,6 +60,150 @@
         "REQ-7"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-seller-facing-product-photo-upload-and-management-so-a-supplier-can-attach-one-or-more-images-to-a-product-persist-them-on-the-backend-and-display-the-primary-product-image-across-the-storefront-and-cart",
+      "title": "Add seller-facing product photo upload and management so a supplier can attach one or more images to a product, persist them on the backend, and display the primary product image across the storefront and cart.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-product-category-system-maintain-a-category-list-allow-sellers-to-assign-a-category-to-products-and-allow-shoppers-to-browse-filter-products-by-category",
+      "title": "Implement a product category system: maintain a category list, allow sellers to assign a category to products, and allow shoppers to browse/filter products by category.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-dedicated-store-view-page-that-displays-a-supplier-s-store-profile-name-description-contact-info-when-available-and-lists-only-that-supplier-s-products-with-navigation-entry-points-from-the-suppliers-page-and-the-seller-dashboard",
+      "title": "Add a dedicated Store View page that displays a supplier’s store profile (name, description, contact info when available) and lists only that supplier’s products, with navigation entry points from the Suppliers page and the seller dashboard.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-inventory-stock-quantity-clearly-manageable-and-visible-ensure-sellers-can-edit-stock-from-the-product-form-and-optionally-adjust-stock-quickly-from-the-seller-product-list-and-ensure-storefront-pages-consistently-show-stock-and-prevent-adding-out-of-stock-items-to-cart",
+      "title": "Make inventory (stock quantity) clearly manageable and visible: ensure sellers can edit stock from the product form and optionally adjust stock quickly from the seller product list, and ensure storefront pages consistently show stock and prevent adding out-of-stock items to cart.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-public-store-landing-page-frontend-src-pages-storeviewpage-tsx-to-match-the-shopify-store-landing-page-screenshot-provided-by-the-user-recreating-the-same-overall-layout-spacing-section-structure-and-visual-hierarchy-while-keeping-all-user-facing-text-in-english",
+      "title": "Redesign the public store landing page (frontend/src/pages/StoreViewPage.tsx) to match the Shopify store landing page screenshot provided by the user, recreating the same overall layout, spacing, section structure, and visual hierarchy while keeping all user-facing text in English.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-redesigned-store-landing-page-continues-to-use-the-existing-storeviewpage-data-sources-supplier-profile-and-supplier-products-and-does-not-introduce-new-backend-endpoints-or-break-current-navigation-from-the-suppliers-page-to-store-supplierid",
+      "title": "Ensure the redesigned store landing page continues to use the existing StoreViewPage data sources (supplier profile and supplier products) and does not introduce new backend endpoints or break current navigation from the Suppliers page to /store/$supplierId.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-home-page-frontend-src-pages-homepage-tsx-to-closely-match-the-layout-spacing-and-visual-hierarchy-shown-in-the-3-uploaded-screenshots-including-a-minimal-top-bar-logo-left-a-single-right-aligned-cta-link-button-a-hero-section-with-headline-supporting-text-email-input-primary-cta-button-and-a-hero-illustration-a-horizontal-trusted-by-logo-row-a-dark-feature-section-with-a-large-heading-and-2-3-feature-cards-a-light-stats-section-with-two-large-stat-cards-a-build-with-help-by-your-side-2x2-icon-text-grid-a-dark-faq-section-using-an-accordion-list-and-a-bottom-email-cta-section-above-the-footer-use-english-for-all-user-facing-text",
+      "title": "Redesign the Home page (frontend/src/pages/HomePage.tsx) to closely match the layout, spacing, and visual hierarchy shown in the 3 uploaded screenshots, including: a minimal top bar (logo left, a single right-aligned CTA link/button), a hero section with headline + supporting text + email input + primary CTA button and a hero illustration, a horizontal “trusted by” logo row, a dark feature section with a large heading and 2–3 feature cards, a light stats section with two large stat cards, a “Build with help by your side” 2x2 icon/text grid, a dark FAQ section using an accordion list, and a bottom email CTA section above the footer. Use English for all user-facing text.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-shell-so-the-landing-page-is-publicly-viewable-without-requiring-internet-identity-login-while-keeping-all-other-pages-protected-as-they-are-today-specifically-unauthenticated-users-visiting-the-home-route-should-see-the-redesigned-landing-page-instead-of-the-authentication-gated-screen-unauthenticated-users-visiting-other-routes-should-still-be-prompted-to-log-in",
+      "title": "Update the app shell so the landing page is publicly viewable without requiring Internet Identity login, while keeping all other pages protected as they are today. Specifically: unauthenticated users visiting the home route (/) should see the redesigned landing page instead of the authentication-gated screen; unauthenticated users visiting other routes should still be prompted to log in.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-landing-page-only-header-footer-presentation-that-matches-the-screenshots-minimal-header-with-logo-a-single-right-side-cta-and-a-simple-footer-link-row-without-breaking-the-existing-in-app-header-footer-used-for-authenticated-users",
+      "title": "Add a landing-page-only header/footer presentation that matches the screenshots (minimal header with logo + a single right-side CTA, and a simple footer link row), without breaking the existing in-app Header/Footer used for authenticated users.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-all-visible-references-to-the-brand-name-shopify-from-the-public-landing-page-and-replace-them-with-shanju-ensuring-all-user-facing-text-remains-in-english-and-reads-naturally-no-trademarked-phrasing",
+      "title": "Remove all visible references to the brand name “Shopify” from the public landing page and replace them with “Shanju”, ensuring all user-facing text remains in English and reads naturally (no trademarked phrasing).",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-landing-page-only-header-branding-to-use-the-shanju-name-e-g-logo-alt-text-and-any-visible-brand-label-if-present-without-changing-authentication-gated-header-behavior",
+      "title": "Update the landing-page-only header branding to use the “Shanju” name (e.g., logo alt text and any visible brand label if present) without changing authentication-gated header behavior.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-landing-page-s-current-placeholder-fake-marketing-images-with-new-visually-coherent-non-branded-images-selected-by-the-developer-implemented-as-static-assets-under-frontend-public-assets-generated-and-referenced-via-frontend-src-utils-assets-ts",
+      "title": "Replace the landing page’s current placeholder/fake marketing images with new, visually coherent, non-branded images selected by the developer, implemented as static assets under frontend/public/assets/generated and referenced via frontend/src/utils/assets.ts.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-landing-page-email-capture-start-free-trial-so-it-no-longer-behaves-as-ui-only-instead-it-must-start-a-real-onboarding-flow-that-uses-internet-identity-login-not-email-magic-links-and-then-routes-the-user-into-the-authenticated-app",
+      "title": "Update the landing page email capture (“Start free trial”) so it no longer behaves as UI-only; instead it must start a real onboarding flow that uses Internet Identity login (not email magic links) and then routes the user into the authenticated app.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-persist-the-email-address-entered-on-the-landing-page-across-the-internet-identity-login-redirect-and-use-it-to-prefill-the-profile-creation-ui-when-the-profilesetupmodal-is-shown",
+      "title": "Persist the email address entered on the landing page across the Internet Identity login redirect and use it to prefill the profile creation UI when the ProfileSetupModal is shown.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-onboarding-brand-copy-in-the-profile-creation-modal-so-it-matches-the-app-s-current-brand-and-does-not-reference-unrelated-branding",
+      "title": "Fix onboarding/brand copy in the profile creation modal so it matches the app’s current brand and does not reference unrelated branding.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-landing-page-header-cta-so-it-meaningfully-supports-onboarding-rather-than-linking-back-to-and-does-not-mislead-users-into-expecting-an-email-based-login",
+      "title": "Update the landing-page header CTA so it meaningfully supports onboarding (rather than linking back to /) and does not mislead users into expecting an email-based login.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-when-a-user-is-authenticated-internet-identity-is-present-and-visits-the-home-route-automatically-redirect-them-to-the-seller-dashboard-route-seller-dashboard-so-the-public-landing-page-never-renders-for-authenticated-users",
+      "title": "When a user is authenticated (Internet Identity is present) and visits the home route (/), automatically redirect them to the seller dashboard route (/seller-dashboard) so the public landing page never renders for authenticated users.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-existing-onboarding-redirect-logic-onboardingstorage-redirect-target-set-by-the-landing-page-start-free-trial-continues-to-work-and-that-it-does-not-conflict-with-the-new-authenticated-seller-dashboard-redirect-i-e-onboarding-redirect-should-still-take-precedence-when-present",
+      "title": "Ensure the existing onboarding redirect logic (onboardingStorage redirect target set by the landing page 'Start free trial') continues to work, and that it does not conflict with the new authenticated / -> /seller-dashboard redirect (i.e., onboarding redirect should still take precedence when present).",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -101,6 +249,54 @@
       "reqIds": [
         "REQ-5"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add product photo upload/management for products (attach images to product listings)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add product inventory management (stock quantity tracking/updates)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Add product category list and category assignment/browsing for products",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Add a Store View page/section (view store storefront/preview store)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Recreate a Shopify store landing page to match the provided screenshot design (same layout/UI)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Rebrand landing page copy to remove all 'Shopify' references and use 'Shanju' instead; replace fake/placeholder images with suitable real images",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Implement functional 'Start free trial' onboarding: capture email and either (a) send a login method (magic link/OTP/password) or (b) redirect appropriately to an authenticated dashboard flow so users can actually enter the dashboard after starting a trial.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "After a user completes the first 'free trial' login/onboarding, do not show the landing page again for that user; on future visits route them directly to the authenticated dashboard (e.g., /dashboard) instead of showing the landing page.",
+      "reqIds": [],
       "status": "pending"
     }
   ],

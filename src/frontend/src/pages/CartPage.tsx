@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
 import { Badge } from '../components/ui/badge';
-import { ASSETS } from '../utils/assets';
+import { getCartItemImageUrl } from '../utils/productImages';
 
 type CartItem = {
   id: string;
@@ -89,7 +89,7 @@ export default function CartPage() {
                   <div className="flex gap-4">
                     <div className="w-24 h-24 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                       <img
-                        src={ASSETS.productPlaceholder}
+                        src={getCartItemImageUrl(item.image)}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />

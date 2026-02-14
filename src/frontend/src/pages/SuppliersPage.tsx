@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Skeleton } from '../components/ui/skeleton';
-import { Store, MapPin, Mail, ArrowRight } from 'lucide-react';
+import { Store, MapPin, Mail, ArrowRight, Eye } from 'lucide-react';
 import { Badge } from '../components/ui/badge';
 import { useGetAllSuppliers, useGetAllProducts } from '../hooks/useQueries';
 import { useMemo } from 'react';
@@ -25,6 +25,10 @@ export default function SuppliersPage() {
   const handleViewProducts = (supplierId: string) => {
     setSupplierIdInUrl(supplierId);
     navigate({ to: '/products' });
+  };
+
+  const handleViewStore = (supplierId: string) => {
+    navigate({ to: '/store/$supplierId', params: { supplierId } });
   };
 
   return (
@@ -89,14 +93,23 @@ export default function SuppliersPage() {
                   </div>
                 </div>
                 
-                <Button 
-                  className="w-full gap-2" 
-                  variant="outline"
-                  onClick={() => handleViewProducts(supplier.id.toString())}
-                >
-                  View Products
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    className="flex-1 gap-2" 
+                    onClick={() => handleViewStore(supplier.id.toString())}
+                  >
+                    <Eye className="h-4 w-4" />
+                    View Store
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="flex-1 gap-2" 
+                    onClick={() => handleViewProducts(supplier.id.toString())}
+                  >
+                    Products
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}

@@ -19,6 +19,7 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
+export const CategoryId = IDL.Text;
 export const ProductId = IDL.Text;
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
@@ -37,6 +38,13 @@ export const OrderItem = IDL.Record({
   'quantity' : IDL.Nat,
   'price' : IDL.Nat,
 });
+export const SupplierId = IDL.Principal;
+export const Category = IDL.Record({
+  'id' : CategoryId,
+  'name' : IDL.Text,
+  'createdBy' : SupplierId,
+  'description' : IDL.Text,
+});
 export const CustomerId = IDL.Principal;
 export const Order = IDL.Record({
   'id' : IDL.Text,
@@ -46,10 +54,10 @@ export const Order = IDL.Record({
   'customerId' : CustomerId,
   'items' : IDL.Vec(OrderItem),
 });
-export const SupplierId = IDL.Principal;
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const Product = IDL.Record({
   'id' : ProductId,
+  'categoryId' : CategoryId,
   'stockQuantity' : IDL.Nat,
   'name' : IDL.Text,
   'description' : IDL.Text,
@@ -126,8 +134,9 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'addCategory' : IDL.Func([IDL.Text, IDL.Text], [CategoryId], []),
   'addProduct' : IDL.Func(
-      [IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+      [CategoryId, IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
       [ProductId],
       [],
     ),
@@ -141,6 +150,7 @@ export const idlService = IDL.Service({
     ),
   'createOrder' : IDL.Func([IDL.Vec(OrderItem), IDL.Nat], [IDL.Text], []),
   'deleteProduct' : IDL.Func([ProductId], [], []),
+  'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
   'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
   'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
   'getAllSuppliers' : IDL.Func([], [IDL.Vec(SupplierProfile)], ['query']),
@@ -152,9 +162,15 @@ export const idlService = IDL.Service({
     ),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getCategory' : IDL.Func([CategoryId], [IDL.Opt(Category)], ['query']),
   'getCustomerOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
   'getOrder' : IDL.Func([IDL.Text], [IDL.Opt(Order)], ['query']),
   'getProduct' : IDL.Func([ProductId], [IDL.Opt(Product)], ['query']),
+  'getProductsByCategory' : IDL.Func(
+      [CategoryId],
+      [IDL.Vec(Product)],
+      ['query'],
+    ),
   'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
   'getSupplier' : IDL.Func([SupplierId], [IDL.Opt(SupplierProfile)], ['query']),
   'getSupplierProducts' : IDL.Func([SupplierId], [IDL.Vec(Product)], ['query']),
@@ -180,7 +196,7 @@ export const idlService = IDL.Service({
     ),
   'updateOrderStatus' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'updateProduct' : IDL.Func(
-      [ProductId, IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+      [ProductId, IDL.Text, IDL.Text, CategoryId, IDL.Nat, IDL.Nat],
       [],
       [],
     ),
@@ -202,6 +218,7 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
+  const CategoryId = IDL.Text;
   const ProductId = IDL.Text;
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
@@ -220,6 +237,13 @@ export const idlFactory = ({ IDL }) => {
     'quantity' : IDL.Nat,
     'price' : IDL.Nat,
   });
+  const SupplierId = IDL.Principal;
+  const Category = IDL.Record({
+    'id' : CategoryId,
+    'name' : IDL.Text,
+    'createdBy' : SupplierId,
+    'description' : IDL.Text,
+  });
   const CustomerId = IDL.Principal;
   const Order = IDL.Record({
     'id' : IDL.Text,
@@ -229,10 +253,10 @@ export const idlFactory = ({ IDL }) => {
     'customerId' : CustomerId,
     'items' : IDL.Vec(OrderItem),
   });
-  const SupplierId = IDL.Principal;
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   const Product = IDL.Record({
     'id' : ProductId,
+    'categoryId' : CategoryId,
     'stockQuantity' : IDL.Nat,
     'name' : IDL.Text,
     'description' : IDL.Text,
@@ -306,8 +330,9 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'addCategory' : IDL.Func([IDL.Text, IDL.Text], [CategoryId], []),
     'addProduct' : IDL.Func(
-        [IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+        [CategoryId, IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
         [ProductId],
         [],
       ),
@@ -321,6 +346,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'createOrder' : IDL.Func([IDL.Vec(OrderItem), IDL.Nat], [IDL.Text], []),
     'deleteProduct' : IDL.Func([ProductId], [], []),
+    'getAllCategories' : IDL.Func([], [IDL.Vec(Category)], ['query']),
     'getAllOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
     'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
     'getAllSuppliers' : IDL.Func([], [IDL.Vec(SupplierProfile)], ['query']),
@@ -332,9 +358,15 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getCategory' : IDL.Func([CategoryId], [IDL.Opt(Category)], ['query']),
     'getCustomerOrders' : IDL.Func([], [IDL.Vec(Order)], ['query']),
     'getOrder' : IDL.Func([IDL.Text], [IDL.Opt(Order)], ['query']),
     'getProduct' : IDL.Func([ProductId], [IDL.Opt(Product)], ['query']),
+    'getProductsByCategory' : IDL.Func(
+        [CategoryId],
+        [IDL.Vec(Product)],
+        ['query'],
+      ),
     'getStripeSessionStatus' : IDL.Func([IDL.Text], [StripeSessionStatus], []),
     'getSupplier' : IDL.Func(
         [SupplierId],
@@ -368,7 +400,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'updateOrderStatus' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'updateProduct' : IDL.Func(
-        [ProductId, IDL.Text, IDL.Text, IDL.Nat, IDL.Nat],
+        [ProductId, IDL.Text, IDL.Text, CategoryId, IDL.Nat, IDL.Nat],
         [],
         [],
       ),

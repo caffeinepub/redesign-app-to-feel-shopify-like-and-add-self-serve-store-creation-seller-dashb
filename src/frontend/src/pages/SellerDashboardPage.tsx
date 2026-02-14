@@ -3,7 +3,7 @@ import { useNavigate, Link } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Store, Package, Plus, Settings, TrendingUp } from 'lucide-react';
+import { Store, Package, Plus, Settings, TrendingUp, Eye } from 'lucide-react';
 import { useGetCallerSupplierProfile, useGetCallerSupplierProducts } from '../hooks/useQueries';
 import SellerProductList from '../components/seller/SellerProductList';
 import ProductFormDialog from '../components/seller/ProductFormDialog';
@@ -61,12 +61,22 @@ export default function SellerDashboardPage() {
               Manage your store and products
             </p>
           </div>
-          <Link to="/create-store">
-            <Button variant="outline" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Store Settings
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => navigate({ to: '/store/$supplierId', params: { supplierId: supplierProfile.id.toString() } })}
+            >
+              <Eye className="h-4 w-4" />
+              View Store
             </Button>
-          </Link>
+            <Link to="/create-store">
+              <Button variant="outline" className="gap-2">
+                <Settings className="h-4 w-4" />
+                Store Settings
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 

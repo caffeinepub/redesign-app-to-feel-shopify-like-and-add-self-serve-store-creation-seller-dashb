@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -6,12 +6,21 @@ import { Label } from './ui/label';
 import { Checkbox } from './ui/checkbox';
 import { useSaveCallerUserProfile } from '../hooks/useQueries';
 import { toast } from 'sonner';
+import { onboardingStorage } from '../utils/onboardingStorage';
 
 export default function ProfileSetupModal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isSupplier, setIsSupplier] = useState(false);
   const saveProfile = useSaveCallerUserProfile();
+
+  // Prefill email from landing page onboarding
+  useEffect(() => {
+    const storedEmail = onboardingStorage.getEmail();
+    if (storedEmail && !email) {
+      setEmail(storedEmail);
+    }
+  }, [email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +33,8 @@ export default function ProfileSetupModal() {
     try {
       await saveProfile.mutateAsync({ name, email, isSupplier });
       toast.success('Profile created successfully!');
+      // Clear stored onboarding email after successful profile creation
+      onboardingStorage.clearEmail();
     } catch (error) {
       toast.error('Failed to create profile');
       console.error(error);
@@ -34,7 +45,7 @@ export default function ProfileSetupModal() {
     <Dialog open={true}>
       <DialogContent className="sm:max-w-md" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>Welcome to DropShip Hub!</DialogTitle>
+          <DialogTitle>Welcome to Shanju!</DialogTitle>
           <DialogDescription>
             Please set up your profile to get started.
           </DialogDescription>
