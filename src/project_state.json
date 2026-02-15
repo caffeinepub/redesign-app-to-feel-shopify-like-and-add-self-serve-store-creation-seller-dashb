@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 29,
+  "projectStateVersion": 35,
   "summary": "Build a Shopify-like e-commerce platform with full Shopify-style UI/UX and functionality, enabling anyone to create and run an online store (multi-store/multi-seller).",
   "architectural_notes": [
     "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout.",
@@ -16,7 +16,9 @@
     "Three-dot (ellipsis) menu in the Seller Dashboard/top bar is not updated to match the provided screenshot; user requests all related options/settings be aligned to the screenshot.",
     "Create Store flow/page is being shown repeatedly even after the user is logged in and has already created/linked a store; the store should remain associated with the same login and not require re-creation.",
     "UI/layout elements become jumbled/overlap ('সব একসাতে এলোমেলো হয়ে যায়') and need spacing/alignment adjustments (likely responsive layout issue).",
-    "Three-dot (overflow) menu dropdown/options background should be white (improve menu readability/visual match to screenshot)."
+    "Three-dot (overflow) menu dropdown/options background should be white (improve menu readability/visual match to screenshot).",
+    "Dashboard is no longer loading/accessible for the user (\"এখন আর ডাসবোর্ড ও আসতেছে না\").",
+    "Seller Dashboard is stuck on loading / takes too long to load; user reports it never finishes loading (needs performance + loading-state investigation)."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -345,6 +347,62 @@
       "title": "Update the Seller Dashboard three-dot (overflow) menu dropdown so the menu options render on a white background with appropriate contrast (readable text/icons) and a subtle border/shadow, without changing the menu items, routes, or logout behavior.",
       "reqIds": [
         "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-left-slide-out-navigation-drawer-ui-opened-from-the-top-bar-hamburger-menu-button-so-its-layout-and-visual-styling-matches-the-provided-screenshot-more-closely-a-light-drawer-surface-full-height-panel-clear-row-hierarchy-and-section-separators-labels",
+      "title": "Update the Seller Dashboard left slide-out navigation drawer UI (opened from the top-bar hamburger/menu button) so its layout and visual styling matches the provided screenshot more closely: a light drawer surface, full-height panel, clear row hierarchy, and section separators/labels.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-runtime-crash-on-the-seller-dashboard-route-seller-dashboard-that-renders-the-generic-error-screen-something-went-wrong-show-error-ensuring-the-dashboard-loads-reliably-on-mobile-and-desktop",
+      "title": "Fix the runtime crash on the Seller Dashboard route (/seller-dashboard) that renders the generic error screen (“Something went wrong! / Show Error”), ensuring the dashboard loads reliably on mobile and desktop.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-data-fetch-gating-so-the-dashboard-renders-only-after-the-caller-supplier-profile-query-has-definitively-resolved-to-a-non-null-profile-and-otherwise-shows-an-appropriate-loading-error-create-store-prompt-state",
+      "title": "Update the Seller Dashboard data-fetch gating so the dashboard renders only after the caller supplier profile query has definitively resolved to a non-null profile, and otherwise shows an appropriate loading / error / create-store prompt state.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-adjust-the-react-query-hook-s-used-by-the-seller-dashboard-to-treat-actor-not-ready-actor-missing-as-a-loading-condition-not-a-completed-non-loading-state-so-pages-that-depend-on-caller-scoped-endpoints-cannot-render-into-a-broken-intermediate-state",
+      "title": "Adjust the React Query hook(s) used by the Seller Dashboard to treat 'actor not ready / actor missing' as a loading condition (not a completed non-loading state), so pages that depend on caller-scoped endpoints cannot render into a broken intermediate state.",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-and-fix-the-issue-where-the-seller-dashboard-page-seller-dashboard-stays-in-a-loading-state-indefinitely-and-never-renders-the-dashboard-for-an-authenticated-seller",
+      "title": "Investigate and fix the issue where the Seller Dashboard page (/seller-dashboard) stays in a loading state indefinitely and never renders the dashboard for an authenticated seller.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-seller-dashboard-loading-performance-by-removing-or-reducing-unnecessary-query-refetch-loops-triggered-during-actor-initialization-identity-changes-and-ensure-react-query-state-transitions-reliably-from-loading-to-success-error-for-dashboard-critical-queries",
+      "title": "Improve Seller Dashboard loading performance by removing or reducing unnecessary query refetch loops triggered during actor initialization/identity changes, and ensure React Query state transitions reliably from loading to success/error for dashboard-critical queries.",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-loading-ux-so-users-are-not-left-on-an-indefinite-spinner-add-a-time-based-fallback-that-offers-a-clear-recovery-action-e-g-retry-reload-while-keeping-all-user-facing-text-in-english",
+      "title": "Update the Seller Dashboard loading UX so users are not left on an indefinite spinner: add a time-based fallback that offers a clear recovery action (e.g., Retry/Reload) while keeping all user-facing text in English.",
+      "reqIds": [
+        "REQ-50"
       ],
       "version": 1
     }

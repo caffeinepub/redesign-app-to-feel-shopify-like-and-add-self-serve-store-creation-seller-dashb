@@ -2,10 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-seller-dashboard-three-dot-overflow-menu-dropdown-so-the-menu-options-render-on-a-white-background-with-appropriate-contrast-readable-text-icons-and-a-subtle-border-shadow-without-changing-the-menu-items-routes-or-logout-behavior",
-      "featureTitle": "Update the Seller Dashboard three-dot (overflow) menu dropdown so the menu options render on a white background with appropriate contrast (readable text/icons) and a subtle border/shadow, without changing the menu items, routes, or logout behavior.",
+      "featureId": "feature-investigate-and-fix-the-issue-where-the-seller-dashboard-page-seller-dashboard-stays-in-a-loading-state-indefinitely-and-never-renders-the-dashboard-for-an-authenticated-seller",
+      "featureTitle": "Investigate and fix the issue where the Seller Dashboard page (/seller-dashboard) stays in a loading state indefinitely and never renders the dashboard for an authenticated seller.",
       "files": [
-        "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/SellerDashboardPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -19,7 +20,53 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-43"
+        "REQ-48"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-improve-seller-dashboard-loading-performance-by-removing-or-reducing-unnecessary-query-refetch-loops-triggered-during-actor-initialization-identity-changes-and-ensure-react-query-state-transitions-reliably-from-loading-to-success-error-for-dashboard-critical-queries",
+      "featureTitle": "Improve Seller Dashboard loading performance by removing or reducing unnecessary query refetch loops triggered during actor initialization/identity changes, and ensure React Query state transitions reliably from loading to success/error for dashboard-critical queries.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/SellerDashboardPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-49"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-seller-dashboard-loading-ux-so-users-are-not-left-on-an-indefinite-spinner-add-a-time-based-fallback-that-offers-a-clear-recovery-action-e-g-retry-reload-while-keeping-all-user-facing-text-in-english",
+      "featureTitle": "Update the Seller Dashboard loading UX so users are not left on an indefinite spinner: add a time-based fallback that offers a clear recovery action (e.g., Retry/Reload) while keeping all user-facing text in English.",
+      "files": [
+        "frontend/src/hooks/useDelayedLoadingFallback.ts",
+        "frontend/src/pages/SellerDashboardPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "stripe@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-50"
       ],
       "confidence": "high"
     }

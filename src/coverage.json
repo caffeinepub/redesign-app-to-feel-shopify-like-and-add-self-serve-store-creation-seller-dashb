@@ -1,24 +1,52 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T11:42:47.602Z",
+  "generatedAt": "2026-02-15T13:52:30.610Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-43",
-        "summary": "Update the Seller Dashboard three-dot (overflow) menu dropdown so the menu options render on a white background with appropriate contrast (readable text/icons) and a subtle border/shadow, without changing the menu items, routes, or logout behavior.",
+        "id": "REQ-48",
+        "summary": "Investigate and fix the issue where the Seller Dashboard page (/seller-dashboard) stays in a loading state indefinitely and never renders the dashboard for an authenticated seller.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx"
+          "frontend/src/pages/SellerDashboardPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx"
+          "frontend/src/pages/SellerDashboardPage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-49",
+        "summary": "Improve Seller Dashboard loading performance by removing or reducing unnecessary query refetch loops triggered during actor initialization/identity changes, and ensure React Query state transitions reliably from loading to success/error for dashboard-critical queries.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/SellerDashboardPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/SellerDashboardPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-50",
+        "summary": "Update the Seller Dashboard loading UX so users are not left on an indefinite spinner: add a time-based fallback that offers a clear recovery action (e.g., Retry/Reload) while keeping all user-facing text in English.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useDelayedLoadingFallback.ts",
+          "frontend/src/pages/SellerDashboardPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useDelayedLoadingFallback.ts",
+          "frontend/src/pages/SellerDashboardPage.tsx"
         ]
       }
     ]
@@ -28,7 +56,9 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx",
+    "frontend/src/hooks/useDelayedLoadingFallback.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/SellerDashboardPage.tsx",
     "frontend/src/utils/urlParams.ts",
     "project_state.json",
     "scratch/component-selection.json",

@@ -1,35 +1,70 @@
 {
   "kind": "build_request",
-  "title": "Make Seller Dashboard overflow menu dropdown background white",
-  "priority": "normal",
+  "title": "Fix Seller Dashboard infinite loading and improve load speed",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-43",
-      "text": "Update the Seller Dashboard three-dot (overflow) menu dropdown so the menu options render on a white background with appropriate contrast (readable text/icons) and a subtle border/shadow, without changing the menu items, routes, or logout behavior.",
+      "id": "REQ-48",
+      "text": "Investigate and fix the issue where the Seller Dashboard page (/seller-dashboard) stays in a loading state indefinitely and never renders the dashboard for an authenticated seller.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4"
         ],
         "quotes": [
-          "থ্রি ডট মেনুর অপশন গুলোর পিছন সাদা কলার করে দিন"
+          "ডাসবোর্ড আসবে কি করে লোডিং এ দিন শেষ লোডিং স্পিড বাড়িয়ে দিন ডাসবোর্ড আসতেছে না একটু চেক করে দেখুন প্লিজ"
         ]
       },
       "acceptanceCriteria": [
-        "In /seller-dashboard, opening the three-dot overflow menu shows a dropdown panel with a white background (not transparent/dark).",
-        "Menu item labels and icons remain readable against the white background in both light and dark app themes.",
-        "Dropdown panel has a subtle border and/or shadow consistent with the app design system and remains aligned to the trigger (no positioning regressions).",
-        "Existing menu items and behaviors remain unchanged: Store Settings navigates to /create-store, View Store navigates to /store/$supplierId, and Logout triggers the existing Internet Identity logout + query cache clear + cart clear + navigates to /."
+        "When an authenticated user with an existing supplier profile visits /seller-dashboard, the dashboard UI renders successfully (top bar, onboarding cards, and product section) instead of staying on “Loading dashboard...” indefinitely.",
+        "If the supplier profile query cannot complete (e.g., due to authorization/actor issues), the page exits the loading spinner and shows an error state with a working Retry action.",
+        "No scenario remains where the page is stuck forever with profileLoading=true or isFetched=false without a user-visible path forward."
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "text": "Improve Seller Dashboard loading performance by removing or reducing unnecessary query refetch loops triggered during actor initialization/identity changes, and ensure React Query state transitions reliably from loading to success/error for dashboard-critical queries.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "লোডিং স্পিড বাড়িয়ে দিন"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Navigating to /seller-dashboard after login completes within a reasonable time and transitions from loading to content without repeated/flickering refetch cycles.",
+        "Dashboard-critical queries (caller supplier profile + caller supplier products) do not continuously refetch due solely to actor creation/invalidation side effects.",
+        "The dashboard shows a stable loading state only while the actor and required queries are genuinely pending; once they resolve, the UI updates immediately."
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "text": "Update the Seller Dashboard loading UX so users are not left on an indefinite spinner: add a time-based fallback that offers a clear recovery action (e.g., Retry/Reload) while keeping all user-facing text in English.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "লোডিং এ দিন শেষ"
+        ]
+      },
+      "acceptanceCriteria": [
+        "If “Loading dashboard...” persists beyond a short threshold (e.g., ~10–15 seconds), the UI displays a clear message and an action to Retry (refetch) and/or Reload the page.",
+        "All new/updated user-facing text on the loading fallback is English and consistent with the rest of the app’s tone.",
+        "The fallback does not break normal fast loads (i.e., it should not appear when the dashboard loads quickly)."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/components/ui (read-only shadcn components); implement styling via composition/props/classes in app-owned components such as frontend/src/components/seller/SellerDashboardOverflowMenu.tsx."
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui (immutable paths). If changes are needed, implement them via composition/wrappers or changes in non-immutable files such as frontend/src/hooks/useQueries.ts and page components.",
+    "Do not add new backend canisters or external services; keep the existing single-actor Motoko backend architecture."
   ],
   "nonGoals": [
-    "Do not add or remove overflow menu items.",
-    "Do not change navigation, authentication, or logout logic.",
-    "Do not redesign the Seller Dashboard top bar beyond the overflow menu dropdown styling."
+    "No new product features or dashboard redesign beyond what is necessary to resolve the loading issue and improve load speed/UX.",
+    "No changes to authentication provider (must remain Internet Identity)."
   ],
   "imageRequirements": {
     "required": [],

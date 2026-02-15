@@ -123,13 +123,18 @@ export function useGetCallerSupplierProfile() {
       return actor.getCallerSupplierProfile();
     },
     enabled: !!actor && !actorFetching,
-    retry: false,
+    retry: 2,
+    retryDelay: 1000,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
 
   return {
     ...query,
     isLoading: actorFetching || query.isLoading,
-    isFetched: !!actor && query.isFetched,
+    isFetched: !!actor && !actorFetching && query.isFetched,
   };
 }
 
@@ -235,16 +240,30 @@ export function useGetAllProducts() {
 }
 
 export function useGetCallerSupplierProducts() {
-  const { actor, isFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useActor();
+  const queryClient = useQueryClient();
 
-  return useQuery<Product[]>({
+  // Check if supplier profile exists before fetching products
+  const supplierProfile = queryClient.getQueryData<SupplierProfile | null>(['callerSupplierProfile']);
+  const shouldFetch = !!actor && !actorFetching && supplierProfile !== undefined;
+
+  const query = useQuery<Product[]>({
     queryKey: ['callerSupplierProducts'],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getCallerSupplierProducts();
     },
-    enabled: !!actor && !isFetching,
+    enabled: shouldFetch && supplierProfile !== null,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
+
+  return {
+    ...query,
+    isLoading: actorFetching || query.isLoading,
+  };
 }
 
 export function useGetSupplierProducts(supplierId: string) {

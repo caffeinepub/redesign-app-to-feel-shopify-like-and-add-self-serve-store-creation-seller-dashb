@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Make the Seller Dashboard three-dot (overflow) menu dropdown render with a white background and clear contrast while keeping all existing menu items and behaviors unchanged.
+**Goal:** Fix the Seller Dashboard infinite loading issue and improve dashboard load speed and loading UX for authenticated sellers.
 
 **Planned changes:**
-- Update the Seller Dashboard overflow menu dropdown styling (via app-owned components, not shadcn UI files) to use a white background with readable text/icons in both light and dark themes.
-- Add a subtle border and/or shadow to the dropdown panel consistent with the existing design system, ensuring alignment/positioning to the trigger does not regress.
-- Preserve current overflow menu items, routes, and logout behavior exactly as-is.
+- Investigate and fix why `/seller-dashboard` can remain stuck on “Loading dashboard...” for authenticated users with an existing supplier profile.
+- Ensure dashboard-critical data fetches (supplier profile and supplier products) reliably transition from loading to success/error, and avoid unnecessary refetch loops tied to actor initialization/identity changes.
+- Add a time-based loading fallback (after ~10–15 seconds) that replaces an indefinite spinner with an English error/help message and a working Retry and/or Reload action.
 
-**User-visible outcome:** On `/seller-dashboard`, opening the three-dot menu shows a white dropdown panel with readable options, subtle border/shadow, and unchanged navigation/logout behavior.
+**User-visible outcome:** Authenticated sellers can open `/seller-dashboard` and see the dashboard content load reliably and faster; if loading fails or takes too long, they see a clear English message with a recovery action instead of an endless loading state.

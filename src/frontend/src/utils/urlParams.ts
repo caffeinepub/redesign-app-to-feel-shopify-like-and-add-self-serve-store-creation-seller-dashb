@@ -214,7 +214,7 @@ export function getSecretParameter(paramName: string): string | null {
  * @returns The supplier ID if found, null otherwise
  */
 export function getSupplierIdFromUrl(): string | null {
-    return getUrlParameter('supplierId');
+    return getUrlParameter('supplier');
 }
 
 /**
@@ -228,21 +228,60 @@ export function setSupplierIdInUrl(supplierId: string): void {
         return;
     }
 
-    const url = new URL(window.location.href);
-    url.searchParams.set('supplierId', supplierId);
-    window.history.pushState({}, '', url.toString());
+    const hash = window.location.hash;
+    const hashContent = hash.substring(1); // Remove leading #
+    const queryStartIndex = hashContent.indexOf('?');
+    
+    let routePath = hashContent;
+    let existingParams = new URLSearchParams();
+    
+    if (queryStartIndex !== -1) {
+        routePath = hashContent.substring(0, queryStartIndex);
+        const queryString = hashContent.substring(queryStartIndex + 1);
+        existingParams = new URLSearchParams(queryString);
+    }
+    
+    existingParams.set('supplier', supplierId);
+    
+    const newHash = routePath + '?' + existingParams.toString();
+    const newUrl = window.location.pathname + window.location.search + '#' + newHash;
+    window.history.pushState(null, '', newUrl);
 }
 
 /**
  * Clears the supplier filter from the URL
- * Used when removing the supplier filter on the products page
+ * Removes the supplier query parameter without reloading the page
  */
 export function clearSupplierFilter(): void {
     if (!window.history.replaceState) {
         return;
     }
 
-    const url = new URL(window.location.href);
-    url.searchParams.delete('supplierId');
-    window.history.replaceState({}, '', url.toString());
+    const hash = window.location.hash;
+    if (!hash || hash.length <= 1) {
+        return;
+    }
+
+    const hashContent = hash.substring(1);
+    const queryStartIndex = hashContent.indexOf('?');
+
+    if (queryStartIndex === -1) {
+        return;
+    }
+
+    const routePath = hashContent.substring(0, queryStartIndex);
+    const queryString = hashContent.substring(queryStartIndex + 1);
+    const params = new URLSearchParams(queryString);
+    
+    params.delete('supplier');
+    
+    const newQueryString = params.toString();
+    let newHash = routePath;
+    
+    if (newQueryString) {
+        newHash += '?' + newQueryString;
+    }
+    
+    const newUrl = window.location.pathname + window.location.search + (newHash ? '#' + newHash : '');
+    window.history.replaceState(null, '', newUrl);
 }

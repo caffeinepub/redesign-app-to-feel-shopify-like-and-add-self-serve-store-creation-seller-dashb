@@ -1,22 +1,68 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Seller Dashboard overflow menu dropdown white background styling",
+  "title": "Fix Seller Dashboard infinite loading and improve loading UX/performance",
   "requirements": [
     {
-      "id": "REQ-43",
-      "summary": "Style the Seller Dashboard overflow dropdown panel to render with a white background, readable text/icons in all themes, and a subtle border/shadow while keeping menu items, routes, and logout behavior unchanged (using shadcn-ui DropdownMenu via class overrides).",
+      "id": "REQ-48",
+      "summary": "Ensure /seller-dashboard reliably exits the loading state and renders the dashboard (or a recoverable error) for authenticated sellers.",
       "acceptanceCriteria": [
-        "In /seller-dashboard, opening the three-dot overflow menu shows a dropdown panel with a white background (not transparent/dark).",
-        "Menu item labels and icons remain readable against the white background in both light and dark app themes.",
-        "Dropdown panel has a subtle border and/or shadow consistent with the app design system and remains aligned to the trigger (no positioning regressions).",
-        "Existing menu items and behaviors remain unchanged: Store Settings navigates to /create-store, View Store navigates to /store/$supplierId, and Logout triggers the existing Internet Identity logout + query cache clear + cart clear + navigates to /."
+        "When an authenticated user with an existing supplier profile visits /seller-dashboard, the dashboard UI renders successfully (top bar, onboarding cards, and product section) instead of staying on “Loading dashboard...” indefinitely.",
+        "If the supplier profile query cannot complete (e.g., due to authorization/actor issues), the page exits the loading spinner and shows an error state with a working Retry action.",
+        "No scenario remains where the page is stuck forever with profileLoading=true or isFetched=false without a user-visible path forward."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx",
+          "path": "frontend/src/pages/SellerDashboardPage.tsx",
           "operation": "modify",
-          "description": "Update the shadcn-ui DropdownMenuContent and item styling via className composition (do not modify files under frontend/src/components/ui) to force a white dropdown background in both themes, apply a subtle border/shadow, and set text/icon/hover/focus colors for contrast while preserving existing menu items, navigation routes, and logout logic. Verify the component's usage instructions before implementing."
+          "description": "Remove the current early-return condition that gates rendering on `!isFetched` (which can block error rendering). Reorder the state handling so errors render before loading, and use a single authoritative loading state driven by query `isLoading` (and actor readiness as exposed by the query hook), ensuring the page can always progress to success, create-store, or error UI with a working Retry action."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Harden seller dashboard query hooks to avoid ambiguous states: ensure `useGetCallerSupplierProfile` and `useGetCallerSupplierProducts` return loading/success/error flags that reflect actor dependency without leaving the caller in a permanent `isFetched=false` gate. Keep `retry` behavior explicit for supplier profile (to surface errors quickly) and make refetch functions safe to call from the dashboard Retry action."
+        }
+      ]
+    },
+    {
+      "id": "REQ-49",
+      "summary": "Reduce unnecessary seller dashboard refetch loops tied to actor/identity transitions and stabilize React Query state changes for dashboard-critical data.",
+      "acceptanceCriteria": [
+        "Navigating to /seller-dashboard after login completes within a reasonable time and transitions from loading to content without repeated/flickering refetch cycles.",
+        "Dashboard-critical queries (caller supplier profile + caller supplier products) do not continuously refetch due solely to actor creation/invalidation side effects.",
+        "The dashboard shows a stable loading state only while the actor and required queries are genuinely pending; once they resolve, the UI updates immediately."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Tune React Query options for seller-dashboard-critical queries to prevent churn caused by actor invalidation: add appropriate `staleTime` and disable refetch triggers that cause flicker (e.g., `refetchOnWindowFocus`, `refetchOnReconnect`, and unnecessary `refetchOnMount`). Also gate `useGetCallerSupplierProducts` so it only runs after the supplier profile has conclusively loaded and is non-null, preventing avoidable calls/loops when the caller is not yet a supplier."
+        },
+        {
+          "path": "frontend/src/pages/SellerDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Coordinate dashboard queries so products are not treated as dashboard-blocking until the supplier profile is confirmed. Ensure the dashboard renders immediately once profile data is available and does not re-enter full-page loading due to background refetches; keep product section-level loading confined to the product list area (using existing `productsLoading`)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-50",
+      "summary": "Add a time-based loading fallback on /seller-dashboard with clear English recovery actions to avoid indefinite spinner UX.",
+      "acceptanceCriteria": [
+        "If “Loading dashboard...” persists beyond a short threshold (e.g., ~10–15 seconds), the UI displays a clear message and an action to Retry (refetch) and/or Reload the page.",
+        "All new/updated user-facing text on the loading fallback is English and consistent with the rest of the app’s tone.",
+        "The fallback does not break normal fast loads (i.e., it should not appear when the dashboard loads quickly)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useDelayedLoadingFallback.ts",
+          "operation": "create",
+          "description": "Create a small reusable hook that tracks elapsed time for a loading state and exposes a boolean like `showFallback` after ~12 seconds (configurable). This will be used by the Seller Dashboard loading screen to reveal recovery actions without affecting normal fast loads."
+        },
+        {
+          "path": "frontend/src/pages/SellerDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Integrate the new delayed-loading fallback: while loading, show the existing spinner initially; after the threshold, display an English message explaining the dashboard is taking longer than expected plus actions for Retry (trigger supplier profile and products refetch) and Reload (full page reload). Ensure this fallback is only visible when loading truly persists and does not flash on quick loads."
         }
       ]
     }
