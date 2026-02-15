@@ -1,91 +1,36 @@
 {
   "kind": "build_request",
-  "title": "Redesign Seller Dashboard to match the provided Shopify-style screenshots (rebranded to Shanju)",
-  "priority": "normal",
+  "title": "Retry build and resolve deployment error",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-26",
-      "text": "Redesign the Seller Dashboard page UI (frontend/src/pages/SellerDashboardPage.tsx) to closely match the layout, spacing, and visual hierarchy of the two uploaded Shopify admin mobile screenshots, while allowing small visual differences and keeping all user-facing text in English.",
-      "target": "frontend",
+      "id": "REQ-33",
+      "text": "Investigate the current build/deployment failure, identify the root cause, and implement the minimal code/configuration changes required so the project builds and deploys successfully again.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-2"
         ],
         "quotes": [
-          "সেলার ডাসবোর্ডে ডিজাইন স্ক্রিনশট দিয়েছে এরকম দেখে করে দিন... Shopify এর নামের জায়গায় Shanju নাম তাকবে",
-          "হ্যা করে দিন সামান্য পরিবর্তন হলে সমস্যা নাই করে দিন"
+          "চেষ্টা করুন"
         ]
       },
       "acceptanceCriteria": [
-        "Seller dashboard uses a mobile-first layout resembling the screenshots (top dark bar + main content cards/checklist style), with consistent spacing and card styling.",
-        "Dashboard remains fully usable on desktop (responsive) without broken layout.",
-        "No regression to existing seller dashboard capabilities: viewing store, opening store settings, and adding products still work."
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "text": "Implement a Shopify-admin-like top header section within the Seller Dashboard content (not the global app Header) that matches the screenshots: a dark bar with a menu icon, a prominent search input, a notifications icon, and a circular user/store badge placeholder. This header must not change global navigation behavior outside the dashboard.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "সেলার ডাসবোর্ডে ডিজাইন স্ক্রিনশট দিয়েছে এরকম দেখে করে দিন"
-        ]
-      },
-      "acceptanceCriteria": [
-        "SellerDashboardPage renders an internal dark top bar similar to the screenshots, independent of frontend/src/components/Header.tsx.",
-        "Search field is present visually; it may be non-functional (no backend/search feature required).",
-        "Icons and elements align correctly on common mobile widths (e.g., ~360px) without overflow."
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "text": "Update the Seller Dashboard main content to follow the screenshot’s onboarding/checklist card pattern (e.g., ‘Add store name’, ‘Add your first product’, and additional setup cards), wiring CTAs to existing app actions: store name/settings must navigate to /create-store, and ‘Add product’ must open the existing ProductFormDialog. Any additional setup cards may be informational-only if no corresponding feature exists, but must look consistent and not break navigation.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "আপনার ইচ্ছে মতো ডিজাইন করুন দেখতে যেনো সেইম মনে হয়"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A prominent ‘Add store name’ (or equivalent) section exists and navigates to /create-store.",
-        "An ‘Add product’ CTA exists and opens the existing ProductFormDialog (same functionality as current ‘Add Product’ button).",
-        "Existing product list/management UI remains accessible from the dashboard (it can be placed lower on the page or behind a section), including edit, delete, and quick stock update."
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "text": "Ensure the Seller Dashboard contains no visible occurrences of the brand name ‘Shopify’; replace any such visible copy with ‘Shanju’ where branding is needed. Keep all user-facing text in English.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Shopify এর নামের জায়গায় Shanju নাম তাকবে"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A UI text scan of SellerDashboardPage and any new dashboard-only components shows no visible ‘Shopify’ strings.",
-        "Any new branding labels shown in the dashboard use ‘Shanju’.",
-        "All newly added labels, headings, helper text, and button text are in English."
+        "A clean build completes successfully without compilation/type errors in both backend (Motoko) and frontend (React/TypeScript).",
+        "A deploy completes successfully without runtime traps during canister install/upgrade.",
+        "The deployed app loads in the browser and the core routes render without a blank screen (at minimum: / for unauthenticated users and /seller-dashboard after authentication).",
+        "No changes are made to any paths listed as immutable in SYSTEM_CONTEXT."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be edited: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Do not introduce new backend endpoints or require backend schema/state changes for this redesign.",
-    "Keep existing data sources on the seller dashboard (useGetCallerSupplierProfile, useGetCallerSupplierProducts) and existing flows (ProductFormDialog, /create-store navigation)."
+    "Backend must remain a single-actor Motoko canister with logic in backend/main.mo; add backend/migration.mo only if a state upgrade is required by the fix.",
+    "Do not modify any frontend immutable paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
+    "Use English for any user-facing text introduced or modified by the fix."
   ],
   "nonGoals": [
-    "Implementing real functionality for dashboard search, notifications, theme customization, shipping rates, or domain management (visual-only cards are acceptable).",
-    "Changing global authenticated header/navigation behavior across the rest of the app.",
-    "Adding new authentication methods (only Internet Identity remains)."
+    "Implementing new product features, UI redesign work, or additional pages unrelated to unblocking build/deploy.",
+    "Changing authentication providers (must remain Internet Identity)."
   ],
   "imageRequirements": {
     "required": [],

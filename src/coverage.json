@@ -1,80 +1,37 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-15T04:42:08.322Z",
+  "generatedAt": "2026-02-15T06:30:16.460Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-26",
-        "summary": "Redesign the Seller Dashboard page UI (frontend/src/pages/SellerDashboardPage.tsx) to closely match the layout, spacing, and visual hierarchy of the two uploaded Shopify admin mobile screenshots, while allowing small visual differences and keeping all user-facing text in English.",
+        "id": "REQ-33",
+        "summary": "Investigate the current build/deployment failure, identify the root cause, and implement the minimal code/configuration changes required so the project builds and deploys successfully again.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/SellerDashboardPage.tsx",
-          "frontend/src/index.css"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/SellerDashboardPage.tsx",
-          "frontend/src/index.css"
-        ]
-      },
-      {
-        "id": "REQ-27",
-        "summary": "Implement a Shopify-admin-like top header section within the Seller Dashboard content (not the global app Header) that matches the screenshots: a dark bar with a menu icon, a prominent search input, a notifications icon, and a circular user/store badge placeholder. This header must not change global navigation behavior outside the dashboard.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-          "frontend/src/pages/SellerDashboardPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-          "frontend/src/pages/SellerDashboardPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-28",
-        "summary": "Update the Seller Dashboard main content to follow the screenshot’s onboarding/checklist card pattern (e.g., ‘Add store name’, ‘Add your first product’, and additional setup cards), wiring CTAs to existing app actions: store name/settings must navigate to /create-store, and ‘Add product’ must open the existing ProductFormDialog. Any additional setup cards may be informational-only if no corresponding feature exists, but must look consistent and not break navigation.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx",
-          "frontend/src/pages/SellerDashboardPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx",
-          "frontend/src/pages/SellerDashboardPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-29",
-        "summary": "Ensure the Seller Dashboard contains no visible occurrences of the brand name ‘Shopify’; replace any such visible copy with ‘Shanju’ where branding is needed. Keep all user-facing text in English.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/SellerDashboardPage.tsx",
-          "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-          "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/SellerDashboardPage.tsx",
-          "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-          "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/hooks/useQueries.ts"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx",
-    "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-    "frontend/src/index.css",
-    "frontend/src/pages/SellerDashboardPage.tsx",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/utils/urlParams.ts",
     "project_state.json",
     "scratch/component-selection.json",

@@ -1,94 +1,27 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Shanju Seller Dashboard (Shopify-style) UI Redesign",
+  "title": "Fix frontend build errors blocking successful deploy",
   "requirements": [
     {
-      "id": "REQ-26",
-      "summary": "Redesign SellerDashboardPage to match the Shopify admin mobile screenshots with a mobile-first, responsive card/checklist hierarchy while preserving existing capabilities.",
+      "id": "REQ-33",
+      "summary": "Resolve the frontend-side root cause of the current build/deploy failure with minimal, targeted changes while preserving existing routing and Internet Identity authentication behavior.",
       "acceptanceCriteria": [
-        "Seller dashboard uses a mobile-first layout resembling the screenshots (top dark bar + main content cards/checklist style), with consistent spacing and card styling.",
-        "Dashboard remains fully usable on desktop (responsive) without broken layout.",
-        "No regression to existing seller dashboard capabilities: viewing store, opening store settings, and adding products still work."
+        "A clean frontend build completes successfully without TypeScript or bundler errors.",
+        "The deployed app loads without a blank screen and core routes render (at minimum: / for unauthenticated users and /seller-dashboard after authentication).",
+        "No changes are made to any frontend immutable paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
+        "Any user-facing text introduced or modified by the fix is in English."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/SellerDashboardPage.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Restructure the page into a mobile-first layout: internal dashboard-only top section + stacked onboarding cards + secondary sections (stats and product management) placed lower, ensuring existing actions (View Store, Store Settings, Add Product dialog) remain accessible and functional. Use shadcn-ui components (e.g., Card, Button, Badge, Input) for consistent spacing/typography; verify the component's usage instructions before implementing."
+          "description": "Fix the Principal import to match the project’s generated backend types (frontend/src/backend.d.ts) by switching away from '@dfinity/principal' to the Principal module used by the generated declarations, ensuring the build does not fail due to missing/incorrect Principal dependency or type mismatches."
         },
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add small, dashboard-scoped utility classes (if needed) to support the screenshot-like hierarchy (e.g., subtle card shadows, section spacing) without changing existing global navigation behavior or editing immutable ui component files."
-        }
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "summary": "Add a Seller Dashboard-only Shopify-admin-like internal dark top bar with menu icon, search input (visual-only), notifications icon, and circular badge placeholder without impacting the global Header.",
-      "acceptanceCriteria": [
-        "SellerDashboardPage renders an internal dark top bar similar to the screenshots, independent of frontend/src/components/Header.tsx.",
-        "Search field is present visually; it may be non-functional (no backend/search feature required).",
-        "Icons and elements align correctly on common mobile widths (e.g., ~360px) without overflow."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-          "operation": "create",
-          "description": "Create a dashboard-scoped top bar component that renders a dark header row with (1) menu icon button (no global nav side effects), (2) prominent search input (visual-only), (3) notifications icon button (visual-only), and (4) circular store/user badge placeholder. Use shadcn-ui Input/Button and lucide-react icons; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/SellerDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Wire SellerDashboardTopBar into the dashboard page (inside the page content, not the global header) and ensure the layout remains responsive (no overflow on ~360px widths). Use existing auth/queries and do not modify frontend/src/components/Header.tsx."
-        }
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "summary": "Implement screenshot-like onboarding/checklist cards with CTAs wired to existing flows (/create-store navigation and ProductFormDialog) while keeping product management accessible.",
-      "acceptanceCriteria": [
-        "A prominent ‘Add store name’ (or equivalent) section exists and navigates to /create-store.",
-        "An ‘Add product’ CTA exists and opens the existing ProductFormDialog (same functionality as current ‘Add Product’ button).",
-        "Existing product list/management UI remains accessible from the dashboard (it can be placed lower on the page or behind a section), including edit, delete, and quick stock update."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx",
-          "operation": "create",
-          "description": "Add a dashboard-only onboarding/checklist card stack that matches the screenshot pattern (headline + description + primary CTA, optional secondary link/button). Include: (1) Add store name/settings CTA navigating to /create-store, (2) Add your first product CTA calling a provided callback to open ProductFormDialog, and (3) additional informational-only setup cards styled consistently (no new backend features). Use shadcn-ui Card/Button; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/SellerDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Wire SellerDashboardOnboardingCards into the page and connect CTAs: store settings navigates to /create-store; add product opens existing ProductFormDialog via existing state. Ensure SellerProductList remains reachable (e.g., placed below onboarding section) and retains edit/delete/stock update functionality by keeping SellerProductList integration intact."
-        }
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "summary": "Remove/avoid all visible ‘Shopify’ text in the Seller Dashboard UI and apply ‘Shanju’ branding where appropriate, with all user-facing text in English.",
-      "acceptanceCriteria": [
-        "A UI text scan of SellerDashboardPage and any new dashboard-only components shows no visible ‘Shopify’ strings.",
-        "Any new branding labels shown in the dashboard use ‘Shanju’.",
-        "All newly added labels, headings, helper text, and button text are in English."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/SellerDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Audit and update any dashboard-visible copy introduced or adjusted during the redesign to ensure no ‘Shopify’ appears and any needed branding reads ‘Shanju’, with all text in English."
-        },
-        {
-          "path": "frontend/src/components/seller/SellerDashboardTopBar.tsx",
-          "operation": "modify",
-          "description": "Ensure any branding label/placeholder content rendered by the internal dashboard top bar uses ‘Shanju’ (if shown) and contains no ‘Shopify’ strings; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/seller/SellerDashboardOnboardingCards.tsx",
-          "operation": "modify",
-          "description": "Ensure all onboarding card titles/descriptions/CTAs are English-only and contain no ‘Shopify’ strings; use ‘Shanju’ where branding is needed; verify the component's usage instructions before implementing."
+          "description": "Re-run TypeScript type-check reasoning within this file after the import fix to ensure all hooks that convert supplierId strings to Principal (e.g., useGetSupplier/useGetSupplierProducts) compile cleanly and remain behaviorally identical (no feature changes)."
         }
       ]
     }

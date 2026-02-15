@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 21,
   "summary": "Build a Shopify-like e-commerce platform with full Shopify-style UI/UX and functionality, enabling anyone to create and run an online store (multi-store/multi-seller).",
   "architectural_notes": [
     "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout.",
@@ -10,9 +10,10 @@
   ],
   "known_issues": [
     "'Start free trial' on the landing page does not actually onboard/authenticate users (no magic link/password/OTP is sent and users cannot reach the dashboard).",
-    "After completing free-trial login, returning users still see the landing page; requirement is to route authenticated users directly to the dashboard on repeat visits."
+    "After completing free-trial login, returning users still see the landing page; requirement is to route authenticated users directly to the dashboard on repeat visits.",
+    "Seller Dashboard redesign is still not matching the provided Shopify-style screenshot/layout closely enough (user feedback: 'সেইম হয়নি' / 'not the same')."
   ],
-  "isFixRequest": false,
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-apply-a-cohesive-shopify-like-visual-design-system-across-the-app-home-header-footer-products-suppliers-cart-checkout-payment-success-failure-with-consistent-spacing-typography-and-component-styling-use-english-for-all-user-facing-text",
@@ -235,6 +236,38 @@
       "title": "Ensure the Seller Dashboard contains no visible occurrences of the brand name ‘Shopify’; replace any such visible copy with ‘Shanju’ where branding is needed. Keep all user-facing text in English.",
       "reqIds": [
         "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-seller-dashboard-page-layout-and-styling-frontend-src-pages-sellerdashboardpage-tsx-and-its-seller-dashboard-components-so-the-overall-structure-spacing-and-visual-hierarchy-more-closely-match-the-provided-shopify-admin-mobile-screenshots-treat-the-current-implementation-as-a-first-draft-and-adjust-until-the-page-reads-as-the-same-layout-at-mobile-widths",
+      "title": "Refine the Seller Dashboard page layout and styling (frontend/src/pages/SellerDashboardPage.tsx and its seller dashboard components) so the overall structure, spacing, and visual hierarchy more closely match the provided Shopify-admin mobile screenshots; treat the current implementation as a first draft and adjust until the page reads as the same layout at mobile widths.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-dashboard-only-top-bar-frontend-src-components-seller-sellerdashboardtopbar-tsx-to-better-match-the-screenshot-styling-by-tuning-its-height-padding-icon-sizing-search-field-appearance-and-alignment-for-mobile-first-presentation-while-keeping-it-within-dashboard-content-not-modifying-the-global-header",
+      "title": "Update the dashboard-only top bar (frontend/src/components/seller/SellerDashboardTopBar.tsx) to better match the screenshot styling by tuning its height, padding, icon sizing, search field appearance, and alignment for mobile-first presentation while keeping it within dashboard content (not modifying the global Header).",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-seller-product-management-section-mobile-appropriate-by-rendering-products-in-a-responsive-layout-keep-the-existing-table-layout-for-larger-screens-but-on-small-screens-render-a-stacked-card-list-presentation-that-matches-the-mobile-admin-feel-while-preserving-all-current-actions-edit-delete-quick-stock-update-and-existing-empty-loading-states",
+      "title": "Make the seller product management section mobile-appropriate by rendering products in a responsive layout: keep the existing table layout for larger screens, but on small screens render a stacked card/list presentation that matches the mobile admin feel while preserving all current actions (edit, delete, quick stock update) and existing empty/loading states.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-the-current-build-deployment-failure-identify-the-root-cause-and-implement-the-minimal-code-configuration-changes-required-so-the-project-builds-and-deploys-successfully-again",
+      "title": "Investigate the current build/deployment failure, identify the root cause, and implement the minimal code/configuration changes required so the project builds and deploys successfully again.",
+      "reqIds": [
+        "REQ-33"
       ],
       "version": 1
     }
