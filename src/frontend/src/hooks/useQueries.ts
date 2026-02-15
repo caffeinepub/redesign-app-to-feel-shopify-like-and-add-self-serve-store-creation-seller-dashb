@@ -114,16 +114,23 @@ export function useCreateCheckoutSession() {
 
 // Supplier Management
 export function useGetCallerSupplierProfile() {
-  const { actor, isFetching } = useActor();
+  const { actor, isFetching: actorFetching } = useActor();
 
-  return useQuery<SupplierProfile | null>({
+  const query = useQuery<SupplierProfile | null>({
     queryKey: ['callerSupplierProfile'],
     queryFn: async () => {
-      if (!actor) return null;
+      if (!actor) throw new Error('Actor not available');
       return actor.getCallerSupplierProfile();
     },
-    enabled: !!actor && !isFetching,
+    enabled: !!actor && !actorFetching,
+    retry: false,
   });
+
+  return {
+    ...query,
+    isLoading: actorFetching || query.isLoading,
+    isFetched: !!actor && query.isFetched,
+  };
 }
 
 export function useGetSupplier(supplierId: string) {

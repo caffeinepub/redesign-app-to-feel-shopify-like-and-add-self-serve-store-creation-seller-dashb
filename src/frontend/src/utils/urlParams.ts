@@ -219,7 +219,7 @@ export function getSupplierIdFromUrl(): string | null {
 
 /**
  * Sets the supplier ID in the URL query parameter
- * Used to navigate to products page with supplier filter
+ * Used when navigating to products page with a supplier filter
  *
  * @param supplierId - The supplier ID to set in the URL
  */
@@ -235,7 +235,7 @@ export function setSupplierIdInUrl(supplierId: string): void {
 
 /**
  * Clears the supplier filter from the URL
- * Removes the supplierId query parameter
+ * Used when removing the supplier filter on the products page
  */
 export function clearSupplierFilter(): void {
     if (!window.history.replaceState) {

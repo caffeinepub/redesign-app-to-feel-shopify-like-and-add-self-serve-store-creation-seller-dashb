@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-investigate-the-current-build-deployment-failure-identify-the-root-cause-and-implement-the-minimal-code-configuration-changes-required-so-the-project-builds-and-deploys-successfully-again",
-      "featureTitle": "Investigate the current build/deployment failure, identify the root cause, and implement the minimal code/configuration changes required so the project builds and deploys successfully again.",
+      "featureId": "feature-update-the-seller-dashboard-three-dot-overflow-menu-dropdown-so-the-menu-options-render-on-a-white-background-with-appropriate-contrast-readable-text-icons-and-a-subtle-border-shadow-without-changing-the-menu-items-routes-or-logout-behavior",
+      "featureTitle": "Update the Seller Dashboard three-dot (overflow) menu dropdown so the menu options render on a white background with appropriate contrast (readable text/icons) and a subtle border/shadow, without changing the menu items, routes, or logout behavior.",
       "files": [
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -19,7 +19,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-33"
+        "REQ-43"
       ],
       "confidence": "high"
     }

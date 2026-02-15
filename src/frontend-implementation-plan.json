@@ -1,27 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix frontend build errors blocking successful deploy",
+  "title": "Seller Dashboard overflow menu dropdown white background styling",
   "requirements": [
     {
-      "id": "REQ-33",
-      "summary": "Resolve the frontend-side root cause of the current build/deploy failure with minimal, targeted changes while preserving existing routing and Internet Identity authentication behavior.",
+      "id": "REQ-43",
+      "summary": "Style the Seller Dashboard overflow dropdown panel to render with a white background, readable text/icons in all themes, and a subtle border/shadow while keeping menu items, routes, and logout behavior unchanged (using shadcn-ui DropdownMenu via class overrides).",
       "acceptanceCriteria": [
-        "A clean frontend build completes successfully without TypeScript or bundler errors.",
-        "The deployed app loads without a blank screen and core routes render (at minimum: / for unauthenticated users and /seller-dashboard after authentication).",
-        "No changes are made to any frontend immutable paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
-        "Any user-facing text introduced or modified by the fix is in English."
+        "In /seller-dashboard, opening the three-dot overflow menu shows a dropdown panel with a white background (not transparent/dark).",
+        "Menu item labels and icons remain readable against the white background in both light and dark app themes.",
+        "Dropdown panel has a subtle border and/or shadow consistent with the app design system and remains aligned to the trigger (no positioning regressions).",
+        "Existing menu items and behaviors remain unchanged: Store Settings navigates to /create-store, View Store navigates to /store/$supplierId, and Logout triggers the existing Internet Identity logout + query cache clear + cart clear + navigates to /."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/seller/SellerDashboardOverflowMenu.tsx",
           "operation": "modify",
-          "description": "Fix the Principal import to match the project’s generated backend types (frontend/src/backend.d.ts) by switching away from '@dfinity/principal' to the Principal module used by the generated declarations, ensuring the build does not fail due to missing/incorrect Principal dependency or type mismatches."
-        },
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Re-run TypeScript type-check reasoning within this file after the import fix to ensure all hooks that convert supplierId strings to Principal (e.g., useGetSupplier/useGetSupplierProducts) compile cleanly and remain behaviorally identical (no feature changes)."
+          "description": "Update the shadcn-ui DropdownMenuContent and item styling via className composition (do not modify files under frontend/src/components/ui) to force a white dropdown background in both themes, apply a subtle border/shadow, and set text/icon/hover/focus colors for contrast while preserving existing menu items, navigation routes, and logout logic. Verify the component's usage instructions before implementing."
         }
       ]
     }

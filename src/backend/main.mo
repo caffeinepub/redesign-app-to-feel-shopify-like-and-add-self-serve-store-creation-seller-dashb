@@ -12,6 +12,8 @@ import OutCall "http-outcalls/outcall";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
 
+
+
 actor {
   include MixinStorage();
 
@@ -220,7 +222,6 @@ actor {
     };
   };
 
-  // New function to update supplier only if they already have a profile
   public shared ({ caller }) func updateExistingSupplier(name : Text, description : Text, contactInfo : Text) : async SupplierProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only authenticated users can update supplier profiles");
@@ -536,31 +537,21 @@ actor {
 
   // Helper Functions for Seller Dashboard
 
-  // Fetch the caller's supplier profile, verifies existence before returning
+  // Fetch the caller's supplier profile - returns null if not registered as supplier
   public query ({ caller }) func getCallerSupplierProfile() : async ?SupplierProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only authenticated users can access dashboard");
+      Runtime.trap("Unauthorized: Only authenticated users can access supplier profile");
     };
 
-    // Verify caller is actually a supplier
-    switch (suppliers.get(caller)) {
-      case (null) { Runtime.trap("Unauthorized: Only registered suppliers can access supplier dashboard") };
-      case (?profile) { ?profile };
-    };
+    suppliers.get(caller);
   };
 
-  // Fetch all products belonging to the caller (seller)
+  // Fetch all products belonging to the caller (seller) - returns empty array if not a supplier
   public query ({ caller }) func getCallerSupplierProducts() : async [Product] {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only authenticated users can access dashboard");
+      Runtime.trap("Unauthorized: Only authenticated users can access supplier products");
     };
 
-    // Verify caller is actually a supplier
-    switch (suppliers.get(caller)) {
-      case (null) { Runtime.trap("Unauthorized: Only registered suppliers can access supplier dashboard") };
-      case (?profile) {
-        products.values().filter(func(p : Product) : Bool { p.supplierId == caller }).toArray();
-      };
-    };
+    products.values().filter(func(p : Product) : Bool { p.supplierId == caller }).toArray();
   };
 };

@@ -34,6 +34,7 @@ function RootLayout() {
   const isAuthenticated = !!identity;
   const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
   const isLandingPage = location.pathname === '/';
+  const isSellerDashboard = location.pathname === '/seller-dashboard';
 
   // Handle authenticated user redirect from home route
   useEffect(() => {
@@ -95,7 +96,24 @@ function RootLayout() {
     return <AccessDeniedScreen />;
   }
 
-  // Authenticated layout
+  // Seller dashboard layout (no global header/footer to avoid double-stacking on mobile)
+  if (isSellerDashboard) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        {showProfileSetup && <ProfileSetupModal />}
+        <StripeSetupModal />
+        <div className="fixed bottom-4 right-4 z-50">
+          <AdminSeedButton />
+        </div>
+        <Toaster />
+      </div>
+    );
+  }
+
+  // Authenticated layout with global header/footer (for non-dashboard routes)
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />

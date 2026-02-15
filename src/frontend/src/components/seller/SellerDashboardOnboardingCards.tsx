@@ -29,12 +29,12 @@ export default function SellerDashboardOnboardingCards({
       {/* Store name/settings card */}
       <Card className="border-border/50 hover:border-border transition-colors">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <div className="p-2 bg-primary/10 rounded-lg shrink-0">
                 <Store className="h-5 w-5 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle className="text-base mb-1">Add store name</CardTitle>
                 <CardDescription className="text-sm">
                   Customize your store name, description, and contact information
@@ -45,10 +45,10 @@ export default function SellerDashboardOnboardingCards({
           </div>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Button
               onClick={() => navigate({ to: '/create-store' })}
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
             >
               <Settings className="h-4 w-4" />
               Store Settings
@@ -56,7 +56,7 @@ export default function SellerDashboardOnboardingCards({
             <Button
               variant="outline"
               onClick={() => navigate({ to: '/store/$supplierId', params: { supplierId: supplierProfile.id.toString() } })}
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
             >
               <Eye className="h-4 w-4" />
               View Store
@@ -68,12 +68,12 @@ export default function SellerDashboardOnboardingCards({
       {/* Add product card */}
       <Card className="border-border/50 hover:border-border transition-colors">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <div className="p-2 bg-primary/10 rounded-lg shrink-0">
                 <Package className="h-5 w-5 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle className="text-base mb-1">Add your first product</CardTitle>
                 <CardDescription className="text-sm">
                   Start by adding a product and a few key details
@@ -94,12 +94,12 @@ export default function SellerDashboardOnboardingCards({
       {/* Additional setup cards (visual only) */}
       <Card className="border-border/50 opacity-75">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-muted rounded-lg">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <div className="p-2 bg-muted rounded-lg shrink-0">
                 <Palette className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle className="text-base mb-1">Customize theme</CardTitle>
                 <CardDescription className="text-sm">
                   Choose or generate a custom theme, then add your logo, colors, and images
@@ -118,12 +118,12 @@ export default function SellerDashboardOnboardingCards({
 
       <Card className="border-border/50 opacity-75">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-muted rounded-lg">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <div className="p-2 bg-muted rounded-lg shrink-0">
                 <Truck className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle className="text-base mb-1">Review your shipping rates</CardTitle>
                 <CardDescription className="text-sm">
                   Set up shipping zones and rates for your products
@@ -142,12 +142,12 @@ export default function SellerDashboardOnboardingCards({
 
       <Card className="border-border/50 opacity-75">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-muted rounded-lg">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 min-w-0 flex-1">
+              <div className="p-2 bg-muted rounded-lg shrink-0">
                 <Globe className="h-5 w-5 text-muted-foreground" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle className="text-base mb-1">Customize domain</CardTitle>
                 <CardDescription className="text-sm">
                   Add a custom domain to make your store more professional

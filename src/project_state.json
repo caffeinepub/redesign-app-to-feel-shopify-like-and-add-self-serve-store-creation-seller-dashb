@@ -1,17 +1,22 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
+  "projectStateVersion": 29,
   "summary": "Build a Shopify-like e-commerce platform with full Shopify-style UI/UX and functionality, enabling anyone to create and run an online store (multi-store/multi-seller).",
   "architectural_notes": [
     "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout.",
     "Avoid third-party/trademarked branding in UI text; use platform brand name 'Shanju' across landing/marketing surfaces.",
     "Routing rule: if user is authenticated (already logged in), visiting / should redirect to the dashboard (landing page is only for unauthenticated users).",
-    "Seller dashboard redesign should follow the provided Shopify-style screenshot closely but must use 'Shanju' branding anywhere a Shopify name would appear; slight layout variation is acceptable."
+    "Seller dashboard redesign should follow the provided Shopify-style screenshot closely but must use 'Shanju' branding anywhere a Shopify name would appear; slight layout variation is acceptable.",
+    "Store creation/onboarding should be one-time per authenticated Internet Identity principal; if a supplier profile/store already exists for the logged-in user, the app should not prompt or force the Create Store flow again and should route the user directly to the Seller Dashboard."
   ],
   "known_issues": [
     "'Start free trial' on the landing page does not actually onboard/authenticate users (no magic link/password/OTP is sent and users cannot reach the dashboard).",
     "After completing free-trial login, returning users still see the landing page; requirement is to route authenticated users directly to the dashboard on repeat visits.",
-    "Seller Dashboard redesign is still not matching the provided Shopify-style screenshot/layout closely enough (user feedback: 'সেইম হয়নি' / 'not the same')."
+    "Seller Dashboard redesign is still not matching the provided Shopify-style screenshot/layout closely enough (user feedback: 'সেইম হয়নি' / 'not the same').",
+    "Three-dot (ellipsis) menu in the Seller Dashboard/top bar is not updated to match the provided screenshot; user requests all related options/settings be aligned to the screenshot.",
+    "Create Store flow/page is being shown repeatedly even after the user is logged in and has already created/linked a store; the store should remain associated with the same login and not require re-creation.",
+    "UI/layout elements become jumbled/overlap ('সব একসাতে এলোমেলো হয়ে যায়') and need spacing/alignment adjustments (likely responsive layout issue).",
+    "Three-dot (overflow) menu dropdown/options background should be white (improve menu readability/visual match to screenshot)."
   ],
   "isFixRequest": true,
   "existing_features": [
@@ -270,6 +275,78 @@
         "REQ-33"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-top-bar-ui-frontend-src-components-seller-sellerdashboardtopbar-tsx-to-visually-match-the-uploaded-screenshot-more-closely-on-mobile-including-1-a-prominent-circular-hamburger-menu-button-on-the-left-2-a-dark-rounded-search-field-with-appropriate-padding-icon-alignment-and-3-right-side-icons-sized-aligned-to-match-the-screenshot-s-visual-hierarchy",
+      "title": "Update the Seller Dashboard top bar UI (frontend/src/components/seller/SellerDashboardTopBar.tsx) to visually match the uploaded screenshot more closely on mobile, including: (1) a prominent circular hamburger/menu button on the left, (2) a dark rounded search field with appropriate padding/icon alignment, and (3) right-side icons sized/aligned to match the screenshot’s visual hierarchy.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-dashboard-only-left-slide-out-navigation-drawer-opened-by-the-top-bar-hamburger-menu-button-matching-the-screenshot-s-pattern-light-drawer-surface-icon-label-rows-the-drawer-must-include-english-navigation-entries-that-map-to-existing-app-routes-features-where-possible-home-seller-dashboard-products-scroll-to-product-list-section-or-keep-focus-on-the-products-area-orders-informational-placeholder-customers-informational-placeholder-marketing-informational-placeholder-discounts-informational-placeholder-content-informational-placeholder-markets-informational-placeholder-analytics-informational-placeholder-online-store-navigate-to-the-existing-public-store-view-for-the-current-supplier-settings-navigate-to-create-store",
+      "title": "Implement a dashboard-only left slide-out navigation drawer opened by the top-bar hamburger/menu button, matching the screenshot’s pattern (light drawer surface, icon + label rows). The drawer must include English navigation entries that map to existing app routes/features where possible: Home (Seller Dashboard), Products (scroll to product list section or keep focus on the products area), Orders (informational placeholder), Customers (informational placeholder), Marketing (informational placeholder), Discounts (informational placeholder), Content (informational placeholder), Markets (informational placeholder), Analytics (informational placeholder), Online Store (navigate to the existing public store view for the current supplier), Settings (navigate to /create-store).",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-three-dot-overflow-menu-in-the-seller-dashboard-top-bar-that-opens-a-small-actions-menu-aligned-to-the-screenshot-s-more-options-expectation-include-at-least-store-settings-navigate-to-create-store-view-store-navigate-to-store-supplierid-and-logout-trigger-existing-internet-identity-logout-flow",
+      "title": "Add a three-dot (overflow) menu in the Seller Dashboard top bar that opens a small actions menu aligned to the screenshot’s “more options” expectation. Include at least: Store Settings (navigate to /create-store), View Store (navigate to /store/$supplierId), and Logout (trigger existing Internet Identity logout flow).",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-gating-so-it-does-not-incorrectly-show-the-create-your-store-first-prompt-during-transient-loading-error-states-it-should-only-show-the-create-store-prompt-when-the-caller-supplier-profile-query-has-definitively-resolved-to-null",
+      "title": "Update the seller dashboard gating so it does not incorrectly show the 'Create Your Store First' prompt during transient loading/error states; it should only show the create-store prompt when the caller supplier profile query has definitively resolved to null.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-prevent-the-authenticated-global-app-header-footer-from-visually-colliding-with-the-seller-dashboard-s-internal-dashboard-only-top-bar-on-mobile-the-seller-dashboard-route-seller-dashboard-must-render-in-a-layout-where-the-dashboard-top-bar-is-the-primary-top-navigation-element-without-double-stacked-headers-causing-cramped-or-overlapping-ui",
+      "title": "Prevent the authenticated global app Header/Footer from visually colliding with the Seller Dashboard’s internal (dashboard-only) top bar on mobile. The Seller Dashboard route (/seller-dashboard) must render in a layout where the dashboard top bar is the primary top navigation element, without double-stacked headers causing cramped or overlapping UI.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-stacking-z-index-and-positioning-so-the-seller-dashboard-left-navigation-drawer-and-its-overlay-always-appear-above-dashboard-content-and-the-sticky-dashboard-top-bar-with-correct-layering-and-no-bleed-through-or-mixed-ui-elements",
+      "title": "Fix stacking (z-index) and positioning so the Seller Dashboard left navigation drawer and its overlay always appear above dashboard content and the sticky dashboard top bar, with correct layering and no bleed-through or mixed UI elements.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-seller-dashboard-overflow-three-dot-menu-rendering-on-mobile-so-it-opens-in-the-correct-place-relative-to-the-top-bar-and-does-not-overlap-jumble-with-the-onboarding-header-text-good-morning-let-s-get-started-or-other-content-due-to-incorrect-positioning-layering",
+      "title": "Fix the Seller Dashboard overflow (three-dot) menu rendering on mobile so it opens in the correct place relative to the top bar and does not overlap/jumble with the onboarding header text (“Good morning, let's get started.”) or other content due to incorrect positioning/layering.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-seller-dashboard-onboarding-setup-cards-fully-responsive-on-small-screens-so-internal-button-rows-and-card-content-never-overflow-collide-or-overlap-in-particular-ensure-the-store-settings-and-view-store-actions-in-the-first-onboarding-card-wrap-stack-appropriately-on-narrow-widths",
+      "title": "Make the Seller Dashboard onboarding/setup cards fully responsive on small screens so internal button rows and card content never overflow, collide, or overlap. In particular, ensure the “Store Settings” and “View Store” actions in the first onboarding card wrap/stack appropriately on narrow widths.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-three-dot-overflow-menu-dropdown-so-the-menu-options-render-on-a-white-background-with-appropriate-contrast-readable-text-icons-and-a-subtle-border-shadow-without-changing-the-menu-items-routes-or-logout-behavior",
+      "title": "Update the Seller Dashboard three-dot (overflow) menu dropdown so the menu options render on a white background with appropriate contrast (readable text/icons) and a subtle border/shadow, without changing the menu items, routes, or logout behavior.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -369,6 +446,14 @@
       "id": "AR-20",
       "summary": "Redesign the Seller Dashboard UI to closely match the provided Shopify-style screenshot, allowing slight layout changes, and replace any 'Shopify' naming with 'Shanju' branding throughout the dashboard",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Persist supplier store profiles (and the user-to-supplier association) in stable canister state so that after a user has created a store once, logging in again continues to return the existing supplier profile instead of appearing as missing.",
+      "reqIds": [
+        "REQ-37"
+      ],
       "status": "pending"
     }
   ],
