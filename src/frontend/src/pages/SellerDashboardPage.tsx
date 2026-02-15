@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, Link } from '@tanstack/react-router';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { useNavigate } from '@tanstack/react-router';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Store, Package, Plus, Settings, TrendingUp, Eye } from 'lucide-react';
+import { Store } from 'lucide-react';
 import { useGetCallerSupplierProfile, useGetCallerSupplierProducts } from '../hooks/useQueries';
+import SellerDashboardTopBar from '../components/seller/SellerDashboardTopBar';
+import SellerDashboardOnboardingCards from '../components/seller/SellerDashboardOnboardingCards';
 import SellerProductList from '../components/seller/SellerProductList';
 import ProductFormDialog from '../components/seller/ProductFormDialog';
 
@@ -16,7 +17,7 @@ export default function SellerDashboardPage() {
 
   if (profileLoading) {
     return (
-      <div className="container py-12">
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
         <div className="text-center">
           <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading dashboard...</p>
@@ -27,8 +28,8 @@ export default function SellerDashboardPage() {
 
   if (!supplierProfile) {
     return (
-      <div className="container py-12 max-w-2xl">
-        <Card className="text-center py-12 border-border/50">
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
+        <Card className="max-w-md w-full text-center py-12 border-border/50">
           <CardContent className="space-y-6">
             <Store className="h-16 w-16 text-muted-foreground mx-auto" />
             <div className="space-y-2">
@@ -47,100 +48,30 @@ export default function SellerDashboardPage() {
     );
   }
 
-  const totalProducts = products.length;
-  const totalStock = products.reduce((sum, p) => sum + Number(p.stockQuantity), 0);
-  const lowStockCount = products.filter(p => Number(p.stockQuantity) < 20 && Number(p.stockQuantity) > 0).length;
-
   return (
-    <div className="container py-12">
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">{supplierProfile.name}</h1>
-            <p className="text-muted-foreground text-lg">
-              Manage your store and products
+    <div className="min-h-screen bg-muted/30">
+      {/* Dashboard-only top bar */}
+      <SellerDashboardTopBar storeName={supplierProfile.name} />
+
+      {/* Main content */}
+      <div className="container max-w-5xl py-6 space-y-6">
+        {/* Onboarding/Setup Cards */}
+        <SellerDashboardOnboardingCards
+          supplierProfile={supplierProfile}
+          onAddProduct={() => setIsProductDialogOpen(true)}
+        />
+
+        {/* Product Management Section */}
+        <div className="bg-card rounded-lg border border-border/50 p-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-1">Your Products</h2>
+            <p className="text-sm text-muted-foreground">
+              Manage your product inventory and pricing
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() => navigate({ to: '/store/$supplierId', params: { supplierId: supplierProfile.id.toString() } })}
-            >
-              <Eye className="h-4 w-4" />
-              View Store
-            </Button>
-            <Link to="/create-store">
-              <Button variant="outline" className="gap-2">
-                <Settings className="h-4 w-4" />
-                Store Settings
-              </Button>
-            </Link>
-          </div>
+          <SellerProductList products={products} isLoading={productsLoading} />
         </div>
       </div>
-
-      {/* Stats Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
-        <Card className="border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Products
-            </CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalProducts}</div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Stock
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{totalStock}</div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/50">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Low Stock Items
-            </CardTitle>
-            <Badge variant={lowStockCount > 0 ? "destructive" : "secondary"}>
-              {lowStockCount}
-            </Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{lowStockCount}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Products Section */}
-      <Card className="border-border/50">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Your Products</CardTitle>
-              <CardDescription>
-                Manage your product inventory and pricing
-              </CardDescription>
-            </div>
-            <Button onClick={() => setIsProductDialogOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Product
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <SellerProductList products={products} isLoading={productsLoading} />
-        </CardContent>
-      </Card>
 
       <ProductFormDialog
         open={isProductDialogOpen}

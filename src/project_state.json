@@ -1,17 +1,18 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 15,
+  "projectStateVersion": 17,
   "summary": "Build a Shopify-like e-commerce platform with full Shopify-style UI/UX and functionality, enabling anyone to create and run an online store (multi-store/multi-seller).",
   "architectural_notes": [
     "Platform goal: Shopify-like multi-store e-commerce with role-based access (seller/dropshipper) and storefront + checkout.",
     "Avoid third-party/trademarked branding in UI text; use platform brand name 'Shanju' across landing/marketing surfaces.",
-    "Routing rule: if user is authenticated (already logged in), visiting / should redirect to the dashboard (landing page is only for unauthenticated users)."
+    "Routing rule: if user is authenticated (already logged in), visiting / should redirect to the dashboard (landing page is only for unauthenticated users).",
+    "Seller dashboard redesign should follow the provided Shopify-style screenshot closely but must use 'Shanju' branding anywhere a Shopify name would appear; slight layout variation is acceptable."
   ],
   "known_issues": [
     "'Start free trial' on the landing page does not actually onboard/authenticate users (no magic link/password/OTP is sent and users cannot reach the dashboard).",
     "After completing free-trial login, returning users still see the landing page; requirement is to route authenticated users directly to the dashboard on repeat visits."
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-apply-a-cohesive-shopify-like-visual-design-system-across-the-app-home-header-footer-products-suppliers-cart-checkout-payment-success-failure-with-consistent-spacing-typography-and-component-styling-use-english-for-all-user-facing-text",
@@ -204,6 +205,38 @@
         "REQ-25"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-redesign-the-seller-dashboard-page-ui-frontend-src-pages-sellerdashboardpage-tsx-to-closely-match-the-layout-spacing-and-visual-hierarchy-of-the-two-uploaded-shopify-admin-mobile-screenshots-while-allowing-small-visual-differences-and-keeping-all-user-facing-text-in-english",
+      "title": "Redesign the Seller Dashboard page UI (frontend/src/pages/SellerDashboardPage.tsx) to closely match the layout, spacing, and visual hierarchy of the two uploaded Shopify admin mobile screenshots, while allowing small visual differences and keeping all user-facing text in English.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-shopify-admin-like-top-header-section-within-the-seller-dashboard-content-not-the-global-app-header-that-matches-the-screenshots-a-dark-bar-with-a-menu-icon-a-prominent-search-input-a-notifications-icon-and-a-circular-user-store-badge-placeholder-this-header-must-not-change-global-navigation-behavior-outside-the-dashboard",
+      "title": "Implement a Shopify-admin-like top header section within the Seller Dashboard content (not the global app Header) that matches the screenshots: a dark bar with a menu icon, a prominent search input, a notifications icon, and a circular user/store badge placeholder. This header must not change global navigation behavior outside the dashboard.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seller-dashboard-main-content-to-follow-the-screenshot-s-onboarding-checklist-card-pattern-e-g-add-store-name-add-your-first-product-and-additional-setup-cards-wiring-ctas-to-existing-app-actions-store-name-settings-must-navigate-to-create-store-and-add-product-must-open-the-existing-productformdialog-any-additional-setup-cards-may-be-informational-only-if-no-corresponding-feature-exists-but-must-look-consistent-and-not-break-navigation",
+      "title": "Update the Seller Dashboard main content to follow the screenshot’s onboarding/checklist card pattern (e.g., ‘Add store name’, ‘Add your first product’, and additional setup cards), wiring CTAs to existing app actions: store name/settings must navigate to /create-store, and ‘Add product’ must open the existing ProductFormDialog. Any additional setup cards may be informational-only if no corresponding feature exists, but must look consistent and not break navigation.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-seller-dashboard-contains-no-visible-occurrences-of-the-brand-name-shopify-replace-any-such-visible-copy-with-shanju-where-branding-is-needed-keep-all-user-facing-text-in-english",
+      "title": "Ensure the Seller Dashboard contains no visible occurrences of the brand name ‘Shopify’; replace any such visible copy with ‘Shanju’ where branding is needed. Keep all user-facing text in English.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -296,6 +329,12 @@
     {
       "id": "AR-19",
       "summary": "After a user completes the first 'free trial' login/onboarding, do not show the landing page again for that user; on future visits route them directly to the authenticated dashboard (e.g., /dashboard) instead of showing the landing page.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Redesign the Seller Dashboard UI to closely match the provided Shopify-style screenshot, allowing slight layout changes, and replace any 'Shopify' naming with 'Shanju' branding throughout the dashboard",
       "reqIds": [],
       "status": "pending"
     }

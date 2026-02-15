@@ -207,46 +207,42 @@ export function getSecretParameter(paramName: string): string | null {
     return getSecretFromHash(paramName);
 }
 
-// Supplier filter management functions
-const SUPPLIER_FILTER_KEY = 'shanju_supplier_filter';
-
 /**
- * Gets the supplier ID from URL query parameters
+ * Gets the supplier ID from the URL query parameter
  * Used for filtering products by supplier
  *
  * @returns The supplier ID if found, null otherwise
  */
 export function getSupplierIdFromUrl(): string | null {
-    try {
-        return sessionStorage.getItem(SUPPLIER_FILTER_KEY);
-    } catch (error) {
-        console.warn('Failed to retrieve supplier filter:', error);
-        return null;
-    }
+    return getUrlParameter('supplierId');
 }
 
 /**
- * Sets the supplier ID in session storage for filtering
- * Used when navigating from suppliers page to products page
+ * Sets the supplier ID in the URL query parameter
+ * Used when navigating to products page with a supplier filter
  *
- * @param supplierId - The supplier ID to filter by
+ * @param supplierId - The supplier ID to set in the URL
  */
 export function setSupplierIdInUrl(supplierId: string): void {
-    try {
-        sessionStorage.setItem(SUPPLIER_FILTER_KEY, supplierId);
-    } catch (error) {
-        console.warn('Failed to store supplier filter:', error);
+    if (!window.history.pushState) {
+        return;
     }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('supplierId', supplierId);
+    window.history.pushState({}, '', url.toString());
 }
 
 /**
- * Clears the supplier filter from session storage
- * Used when user wants to view all products
+ * Clears the supplier filter from the URL
+ * Used when removing the supplier filter on the products page
  */
 export function clearSupplierFilter(): void {
-    try {
-        sessionStorage.removeItem(SUPPLIER_FILTER_KEY);
-    } catch (error) {
-        console.warn('Failed to clear supplier filter:', error);
+    if (!window.history.replaceState) {
+        return;
     }
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('supplierId');
+    window.history.replaceState({}, '', url.toString());
 }
